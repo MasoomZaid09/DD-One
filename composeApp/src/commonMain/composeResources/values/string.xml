@@ -1,0 +1,15 @@
+<resources>
+
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="login_text">LOGIN</string>
+    <string name="submit_text">SUBMIT</string>
+    <string name="email_text">EMAIL</string>
+    <string name="password_text">PASSWORD</string>
+    <string name="header_text">SUBMITTED PRODUCT RECORDS</string>
+    <string name="no_data_text">No Data Found</string>
+    <string name="production_text">PRODUCTION DEPARTMENT</string>
+    <string name="account_text">ACCOUNT DEPARTMENT</string>
+    <string name="dispatch_text">DISPATCH DEPARTMENT</string>
+    <string name="service_text">SERVICE DEPARTMENT</string>
+    <string name="serial_number_text">Serial Number</string>
+</resources>

@@ -89,7 +89,6 @@ fun DashboardScreen(component: DashboardComponent) {
     var clickInOutButton by remember { mutableStateOf(false) }
     var openImagePicker by remember { mutableStateOf(false) }
 
-    SharedLogger.i("Masoom Dashboard , $state")
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize().background(AppColors.whiteColor).padding(
             WindowInsets.safeDrawing.asPaddingValues()
@@ -176,7 +175,6 @@ fun DashboardScreen(component: DashboardComponent) {
                             val deviceList = (state as StateClass.UiState.Success).data.data
                             items(deviceList) { singleDevice ->
 
-                                SharedLogger.d(singleDevice.toString())
 
                                 Card(
                                     modifier = Modifier

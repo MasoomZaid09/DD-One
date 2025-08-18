@@ -73,7 +73,6 @@ fun FormScreen(component: FormComponent) {
         }
 
         is StateClass.UiState.Success -> {
-            SharedLogger.d("Masoom : FormScreen Success")
             component.navigateToDashboard()
         }
 
@@ -109,10 +108,6 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                     }
             )
 
-            InfoLoggingFormStatus()
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             // when we add new device using QR code
             if (component.isNewDevice) {
 
@@ -132,6 +127,10 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                     screenSize = "15 Inch",
                     type = "Demo"
                 )
+
+                InfoLoggingFormStatus(1)
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 when (sharedPreferences.getUserType()) {
 
@@ -178,8 +177,26 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
 
                     is StateClass.UiState.Idle -> {}
                     is StateClass.UiState.Success -> {
-                        val response =
-                            (singleDeviceResponse as StateClass.UiState.Success<SingleDeviceResponse>).data.data
+                        val response = (singleDeviceResponse as StateClass.UiState.Success<SingleDeviceResponse>).data.data
+
+                        var statusNumber = 0
+                        if (response.productionDepartment.isNotEmpty()){
+                            statusNumber++
+                        }
+                        if (response.accountDepartment.isNotEmpty()){
+                            statusNumber++
+                        }
+                        if (response.dispatchDepartment.isNotEmpty()){
+                            statusNumber++
+                        }
+                        if (response.serviceDepartment.isNotEmpty()){
+                            statusNumber++
+                        }
+
+                        SharedLogger.i("StatusNumber : $statusNumber | Response : $response")
+                        InfoLoggingFormStatus(statusNumber)
+
+                        Spacer(modifier = Modifier.height(20.dp))
 
                         when (sharedPreferences.getUserType()) {
 

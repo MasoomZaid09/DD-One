@@ -72,10 +72,7 @@ fun ServiceEngineerScreen(
     var installationDate by remember { mutableStateOf(response.installationDate.ifEmpty { "Enter Installation Date" }) }
     var dispatchDate by remember { mutableStateOf(response.dispatchDate.ifEmpty { "Enter Dispatch Date" }) }
 
-    // file picker
     val scope = rememberCoroutineScope()
-    var pdfFileName by remember { mutableStateOf<String?>(null) }
-
     val pickerLauncher = rememberFilePickerLauncher(
         type = FilePickerFileType.Pdf,
         selectionMode = FilePickerSelectionMode.Single,

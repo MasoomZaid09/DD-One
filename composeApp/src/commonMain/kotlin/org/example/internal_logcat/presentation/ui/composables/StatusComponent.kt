@@ -25,7 +25,7 @@ import org.jetbrains.compose.resources.Font
 import org.example.internal_logcat.utils.AppColors
 
 @Composable
-fun InfoLoggingFormStatus() {
+fun InfoLoggingFormStatus(statusNumber : Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
@@ -38,7 +38,7 @@ fun InfoLoggingFormStatus() {
         ) {
             CircularProgressIndicator(
                 progress = {
-                    0.25f // 1 of 4
+                    (statusNumber * 25).toFloat()
                 },
                 modifier = Modifier.fillMaxSize(),
                 color = AppColors.themeGreenColor,
@@ -56,7 +56,7 @@ fun InfoLoggingFormStatus() {
                     fontFamily = FontFamily(Font(Res.font.rem_medium))
                 )
                 Text(
-                    text = "1 of 4",
+                    text = "$statusNumber of 4",
                     fontSize = 12.sp,
                     color = Color.Black,
                     fontFamily = FontFamily(Font(Res.font.rem_medium))

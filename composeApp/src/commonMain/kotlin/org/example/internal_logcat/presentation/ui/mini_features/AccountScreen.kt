@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,12 +24,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.account_text
 import internallogcat.composeapp.generated.resources.rem_bold
 import internallogcat.composeapp.generated.resources.rem_medium
 import internallogcat.composeapp.generated.resources.rem_semibold
 import internallogcat.composeapp.generated.resources.submit_text
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.stringResource
 import org.example.internal_logcat.domain.models.request.FormRequest
@@ -41,6 +47,7 @@ import org.example.internal_logcat.presentation.ui.components_or_viewmodels.Form
 import org.example.internal_logcat.presentation.ui.composables.RoundedEditTextNormal
 import org.example.internal_logcat.presentation.ui.composables.errorText
 import org.example.internal_logcat.utils.AppColors
+import org.example.internal_logcat.utils.SharedLogger
 
 @Composable
 fun AccountScreen(
@@ -60,6 +67,28 @@ fun AccountScreen(
     var amountError by remember { mutableStateOf<String?>(null) }
     var deliveryNote by remember { mutableStateOf(response.deliveryNote) }
     var deliveryNoteError by remember { mutableStateOf<String?>(null) }
+
+    val scopeDeliveryNote = rememberCoroutineScope()
+    val picDeliveryNote = rememberFilePickerLauncher(
+        type = FilePickerFileType.Pdf,
+        selectionMode = FilePickerSelectionMode.Single,
+        onResult = { files ->
+            scopeDeliveryNote.launch {
+                SharedLogger.d("Delivery Note : ${files[0]}")
+            }
+        }
+    )
+
+    val scopeEwayBill = rememberCoroutineScope()
+    val picEwayBill = rememberFilePickerLauncher(
+        type = FilePickerFileType.Pdf,
+        selectionMode = FilePickerSelectionMode.Single,
+        onResult = { files ->
+            scopeEwayBill.launch {
+                SharedLogger.d("Eway Bill : ${files[0]}")
+            }
+        }
+    )
 
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -165,7 +194,9 @@ fun AccountScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
+            onClick = {
+                picDeliveryNote.launch()
+            }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.buttonDarkGrey
             ), modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
@@ -180,7 +211,9 @@ fun AccountScreen(
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
-            onClick = { }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
+            onClick = {
+                picEwayBill.launch()
+            }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
                 containerColor = AppColors.buttonDarkGrey
             ), modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {

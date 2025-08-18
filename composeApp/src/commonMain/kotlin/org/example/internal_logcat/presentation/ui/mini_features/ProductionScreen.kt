@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +23,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mohamedrejeb.calf.picker.FilePickerFileType
+import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
+import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.production_text
 import internallogcat.composeapp.generated.resources.rem_bold
 import internallogcat.composeapp.generated.resources.rem_medium
 import internallogcat.composeapp.generated.resources.rem_semibold
 import internallogcat.composeapp.generated.resources.submit_text
+import kotlinx.coroutines.launch
 import org.example.internal_logcat.presentation.ui.composables.DropDownCustom
 import org.example.internal_logcat.domain.models.request.AccountDepartment
 import org.example.internal_logcat.domain.models.request.DispatchDepartment
@@ -56,6 +61,17 @@ fun ProductionScreen(
     val screenSize = listOf("15 Inch", "24 Inch")
     val exhaleValveType = listOf("Reusable", "Disposable")
     val neoSensorType = listOf("Reusable", "Disposable")
+
+    val scope = rememberCoroutineScope()
+    val pickerLauncher = rememberFilePickerLauncher(
+        type = FilePickerFileType.Pdf,
+        selectionMode = FilePickerSelectionMode.Single,
+        onResult = { files ->
+            scope.launch {
+                SharedLogger.i(files[0].toString())
+            }
+        }
+    )
 
     var serialNumber by remember { mutableStateOf(response.serialNumber) }
     var serialNumberError by remember { mutableStateOf<String?>(null) }
@@ -283,7 +299,7 @@ fun ProductionScreen(
 
         Button(
             onClick = {
-
+                pickerLauncher.launch()
             },
             shape = RoundedCornerShape(20),
             colors = ButtonDefaults.buttonColors(
@@ -349,8 +365,6 @@ fun ProductionScreen(
                         // need to call api
                         component.addDeviceUsingForm(formRequest)
                     } else {
-
-                        SharedLogger.i("RESPONSE_COMPLETE : $completeResponse")
 
                         val formRequest = FormRequest(
                             productionDepartment = arrayListOf(

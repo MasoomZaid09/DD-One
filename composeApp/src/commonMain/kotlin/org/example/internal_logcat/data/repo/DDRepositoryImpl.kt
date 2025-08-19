@@ -1,11 +1,14 @@
 package org.example.internal_logcat.data.repo
 
+import com.mohamedrejeb.calf.core.PlatformContext
+import com.mohamedrejeb.calf.io.KmpFile
 import org.example.internal_logcat.data.remote.DDApi
 import org.example.internal_logcat.domain.models.request.FormRequest
 import org.example.internal_logcat.domain.models.response.DeviceDataResponse
 import org.example.internal_logcat.domain.models.response.FormResponse
 import org.example.internal_logcat.domain.models.response.LoginResponse
 import org.example.internal_logcat.domain.models.response.SingleDeviceResponse
+import org.example.internal_logcat.domain.models.response.UploadFileResponse
 import org.example.internal_logcat.domain.repo.DDRepository
 import org.example.internal_logcat.utils.StateClass
 
@@ -57,6 +60,15 @@ class DDRepositoryImpl(private val ddApi: DDApi) : DDRepository {
         return if (response.statusCode == 2000) {
             StateClass.UiState.Success(response)
         } else {
+            StateClass.UiState.Error(response.message)
+        }
+    }
+
+    override suspend fun uploadFile(file: KmpFile,context: PlatformContext): StateClass.UiState<UploadFileResponse> {
+        val response = ddApi.uploadFile(file,context)
+        return if (response.statusCode == 200){
+            StateClass.UiState.Success(response)
+        }else{
             StateClass.UiState.Error(response.message)
         }
     }

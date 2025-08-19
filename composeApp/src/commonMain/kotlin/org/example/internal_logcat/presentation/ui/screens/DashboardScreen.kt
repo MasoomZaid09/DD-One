@@ -64,23 +64,6 @@ import org.example.internal_logcat.utils.SharedLogger
 import org.example.internal_logcat.utils.StateClass
 import qrscanner.QrScanner
 
-// testing code to attach ios lifecycle with android
-//val lifecycleOwner = LocalLifecycleOwner.current
-//
-//DisposableEffect(lifecycleOwner) {
-//    val observer = LifecycleEventObserver { _, event ->
-//        if (event == Lifecycle.Event.ON_RESUME) {
-//            component.deviceListApi()
-//            // Yaha tum apna resume wala kaam kar sakte ho
-//        }
-//    }
-//    lifecycleOwner.lifecycle.addObserver(observer)
-//
-//    onDispose {
-//        lifecycleOwner.lifecycle.removeObserver(observer)
-//    }
-//}
-
 @Composable
 fun DashboardScreen(component: DashboardComponent) {
 
@@ -130,12 +113,12 @@ fun DashboardScreen(component: DashboardComponent) {
                         component.navigateToLogin()
                     }
                 )
+
             }
 
             Box(
                 modifier = Modifier.weight(1f).fillMaxWidth()
             ) {
-
 
                 when (state) {
 
@@ -168,124 +151,133 @@ fun DashboardScreen(component: DashboardComponent) {
                     }
 
                     is StateClass.UiState.Success -> {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize()
-                        ) {
+                        val deviceList = (state as StateClass.UiState.Success).data.data
 
-                            val deviceList = (state as StateClass.UiState.Success).data.data
-                            items(deviceList) { singleDevice ->
+                        if (deviceList.isEmpty()) {
+                            Text(
+                                text = stringResource(Res.string.no_data_text),
+                                color = AppColors.textGrey,
+                                fontSize = 14.sp,
+                                fontFamily = FontFamily(Font(Res.font.rem_medium)),
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        } else {
+                            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                                items(deviceList) { singleDevice ->
 
-
-                                Card(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(maxHeight * 0.12f)
-                                        .padding(top = maxHeight * 0.01f, bottom = maxHeight * 0.01f),
-                                    shape = RoundedCornerShape(20.dp),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                    colors = CardDefaults.cardColors(containerColor = AppColors.editTextColor)
-                                ) {
-                                    Row(
+                                    Card(
                                         modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = maxWidth * 0.03f),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceBetween
+                                            .fillMaxWidth()
+                                            .height(maxHeight * 0.12f)
+                                            .padding(
+                                                top = maxHeight * 0.01f,
+                                                bottom = maxHeight * 0.01f
+                                            ),
+                                        shape = RoundedCornerShape(20.dp),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+                                        colors = CardDefaults.cardColors(containerColor = AppColors.editTextColor)
                                     ) {
-                                        Image(
-                                            painter = painterResource(Res.drawable.description_logo),
-                                            contentDescription = "Description Icon",
-                                            modifier = Modifier.fillMaxHeight()
-                                                .width(maxWidth * 0.10f)
-                                        )
-
-                                        // text in middle
-                                        Column(
-                                            modifier = Modifier.weight(1f).fillMaxHeight()
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxSize()
                                                 .padding(horizontal = maxWidth * 0.03f),
-                                            verticalArrangement = Arrangement.Center
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
                                         ) {
+                                            Image(
+                                                painter = painterResource(Res.drawable.description_logo),
+                                                contentDescription = "Description Icon",
+                                                modifier = Modifier.fillMaxHeight()
+                                                    .width(maxWidth * 0.10f)
+                                            )
 
-                                            val typeText = buildAnnotatedString {
-                                                withStyle(
-                                                    style = SpanStyle(
-                                                        color = AppColors.textGrey,
-                                                        fontSize = 13.sp,
-                                                        fontFamily = FontFamily(
-                                                            Font(
-                                                                Res.font.rem_regular
+                                            // text in middle
+                                            Column(
+                                                modifier = Modifier.weight(1f).fillMaxHeight()
+                                                    .padding(horizontal = maxWidth * 0.03f),
+                                                verticalArrangement = Arrangement.Center
+                                            ) {
+
+                                                val typeText = buildAnnotatedString {
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            color = AppColors.textGrey,
+                                                            fontSize = 13.sp,
+                                                            fontFamily = FontFamily(
+                                                                Font(
+                                                                    Res.font.rem_regular
+                                                                )
                                                             )
                                                         )
-                                                    )
-                                                ) {
-                                                    append("Type : ")
-                                                }
+                                                    ) {
+                                                        append("Type : ")
+                                                    }
 
-                                                withStyle(
-                                                    style = SpanStyle(
-                                                        color = AppColors.textGrey,
-                                                        fontSize = 15.sp,
-                                                        fontFamily = FontFamily(
-                                                            Font(
-                                                                Res.font.rem_semibold
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            color = AppColors.textGrey,
+                                                            fontSize = 15.sp,
+                                                            fontFamily = FontFamily(
+                                                                Font(
+                                                                    Res.font.rem_semibold
+                                                                )
                                                             )
                                                         )
-                                                    )
-                                                ) {
-                                                    append(singleDevice.productionDepartment[0].type)
+                                                    ) {
+                                                        append(singleDevice.productionDepartment[0].type)
+                                                    }
                                                 }
+                                                Text(text = typeText)
+
+                                                // second text
+                                                val serialNumberText = buildAnnotatedString {
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            color = AppColors.textGrey,
+                                                            fontSize = 13.sp,
+                                                            fontFamily = FontFamily(
+                                                                Font(
+                                                                    Res.font.rem_regular
+                                                                )
+                                                            )
+                                                        )
+                                                    ) {
+                                                        append("S.No : ")
+                                                    }
+
+                                                    withStyle(
+                                                        style = SpanStyle(
+                                                            color = AppColors.textGrey,
+                                                            fontSize = 15.sp,
+                                                            fontFamily = FontFamily(
+                                                                Font(
+                                                                    Res.font.rem_semibold
+                                                                )
+                                                            )
+                                                        )
+                                                    ) {
+                                                        append(singleDevice.productionDepartment[0].serialNumber)
+                                                    }
+                                                }
+                                                Text(text = serialNumberText)
                                             }
-                                            Text(text = typeText)
 
-                                            // second text
-                                            val serialNumberText = buildAnnotatedString {
-                                                withStyle(
-                                                    style = SpanStyle(
-                                                        color = AppColors.textGrey,
-                                                        fontSize = 13.sp,
-                                                        fontFamily = FontFamily(
-                                                            Font(
-                                                                Res.font.rem_regular
-                                                            )
+                                            Image(
+                                                painter = painterResource(Res.drawable.edit_logo),
+                                                contentDescription = "Edit Icon",
+                                                modifier = Modifier.fillMaxHeight()
+                                                    .width(maxWidth * 0.06f).clickable(
+                                                        indication = null,
+                                                        interactionSource = remember { MutableInteractionSource() }
+                                                    ) {
+                                                        component.sendDataToFormPage(
+                                                            singleDevice.id,
+                                                            isNewDevice = false
                                                         )
-                                                    )
-                                                ) {
-                                                    append("S.No : ")
-                                                }
-
-                                                withStyle(
-                                                    style = SpanStyle(
-                                                        color = AppColors.textGrey,
-                                                        fontSize = 15.sp,
-                                                        fontFamily = FontFamily(
-                                                            Font(
-                                                                Res.font.rem_semibold
-                                                            )
-                                                        )
-                                                    )
-                                                ) {
-                                                    append(singleDevice.productionDepartment[0].serialNumber)
-                                                }
-                                            }
-                                            Text(text = serialNumberText)
+                                                    }
+                                            )
 
                                         }
-
-                                        Image(
-                                            painter = painterResource(Res.drawable.edit_logo),
-                                            contentDescription = "Edit Icon",
-                                            modifier = Modifier.fillMaxHeight()
-                                                .width(maxWidth * 0.06f).clickable(
-                                                    indication = null,
-                                                    interactionSource = remember { MutableInteractionSource() }
-                                                ) {
-                                                    component.sendDataToFormPage(
-                                                        singleDevice.id,
-                                                        isNewDevice = false
-                                                    )
-                                                }
-                                        )
-
                                     }
                                 }
                             }

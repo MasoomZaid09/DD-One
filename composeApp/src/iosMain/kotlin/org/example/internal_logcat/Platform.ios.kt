@@ -1,5 +1,6 @@
 package org.example.internal_logcat
 
+import com.mohamedrejeb.calf.core.PlatformContext
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {

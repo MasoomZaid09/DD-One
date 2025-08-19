@@ -12,7 +12,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mohamedrejeb.calf.core.LocalPlatformContext
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
@@ -31,6 +34,7 @@ import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.account_text
 import internallogcat.composeapp.generated.resources.rem_bold
 import internallogcat.composeapp.generated.resources.rem_medium
+import internallogcat.composeapp.generated.resources.rem_regular
 import internallogcat.composeapp.generated.resources.rem_semibold
 import internallogcat.composeapp.generated.resources.submit_text
 import kotlinx.coroutines.cancel
@@ -43,11 +47,13 @@ import org.example.internal_logcat.domain.models.request.DispatchDepartment
 import org.example.internal_logcat.domain.models.request.ProductionDepartment
 import org.example.internal_logcat.domain.models.request.ServiceDepartment
 import org.example.internal_logcat.domain.models.response.Data
+import org.example.internal_logcat.domain.models.response.UploadFileResponse
 import org.example.internal_logcat.presentation.ui.components_or_viewmodels.FormComponent
 import org.example.internal_logcat.presentation.ui.composables.RoundedEditTextNormal
 import org.example.internal_logcat.presentation.ui.composables.errorText
 import org.example.internal_logcat.utils.AppColors
 import org.example.internal_logcat.utils.SharedLogger
+import org.example.internal_logcat.utils.StateClass
 
 @Composable
 fun AccountScreen(
@@ -67,6 +73,18 @@ fun AccountScreen(
     var amountError by remember { mutableStateOf<String?>(null) }
     var deliveryNote by remember { mutableStateOf(response.deliveryNote) }
     var deliveryNoteError by remember { mutableStateOf<String?>(null) }
+    var deliveryBillPath by remember { mutableStateOf(response.deliveryBill) }
+    var ewayBillPath by remember { mutableStateOf(response.ewayBill) }
+
+    SharedLogger.i("Path : $deliveryBillPath , $ewayBillPath")
+
+    var deliveryBillName by remember { mutableStateOf(if (deliveryBillPath.isNotEmpty()) deliveryBillPath.split(".com")[1].split("/")[1] else "")}
+    var ewayBillName by remember { mutableStateOf(
+        if (ewayBillPath.isNotEmpty()) ewayBillPath.split(".com")[1].split("/")[1] else "")}
+    val context = LocalPlatformContext.current
+
+    val stateFirst by component.uploadFileResponse.collectAsState()
+    val stateSecond by component.uploadFileResponseSecond.collectAsState()
 
     val scopeDeliveryNote = rememberCoroutineScope()
     val picDeliveryNote = rememberFilePickerLauncher(
@@ -74,7 +92,9 @@ fun AccountScreen(
         selectionMode = FilePickerSelectionMode.Single,
         onResult = { files ->
             scopeDeliveryNote.launch {
-                SharedLogger.d("Delivery Note : ${files[0]}")
+                files.forEach {
+                    component.uploadFileOnServer(true,it,context)
+                }
             }
         }
     )
@@ -85,7 +105,9 @@ fun AccountScreen(
         selectionMode = FilePickerSelectionMode.Single,
         onResult = { files ->
             scopeEwayBill.launch {
-                SharedLogger.d("Eway Bill : ${files[0]}")
+                files.forEach {
+                    component.uploadFileOnServer(false,it,context)
+                }
             }
         }
     )
@@ -208,6 +230,32 @@ fun AccountScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        when(stateFirst){
+
+            is StateClass.UiState.Error -> {
+                deliveryBillName = "File Not Found"
+            }
+            is StateClass.UiState.Success -> {
+                deliveryBillPath = (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
+                deliveryBillName = (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+            }
+            is StateClass.UiState.Idle -> {}
+            is StateClass.UiState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+        }
+
+        if (deliveryBillName.isNotEmpty()) {
+            Text(
+                text = deliveryBillName,
+                color = AppColors.errorColor,
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(Res.font.rem_regular)),
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
@@ -225,6 +273,33 @@ fun AccountScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        when(stateSecond){
+
+            is StateClass.UiState.Error -> {
+                ewayBillName = "File Not Found"
+            }
+            is StateClass.UiState.Success -> {
+                ewayBillPath = (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
+                ewayBillName = (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+            }
+            is StateClass.UiState.Idle -> {}
+            is StateClass.UiState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+        }
+
+        if (ewayBillName.isNotEmpty()) {
+            Text(
+                text = ewayBillName,
+                color = AppColors.errorColor,
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(Res.font.rem_regular)),
+            )
+        }
+
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
@@ -239,6 +314,10 @@ fun AccountScreen(
                     amountError = "Please Enter Amount"
                 } else if (deliveryNote.isEmpty()) {
                     deliveryNoteError = "Please Enter Delivery Note"
+                }else if (deliveryBillPath.isEmpty()){
+                    deliveryBillName = "Please select file"
+                }else if (ewayBillPath.isEmpty()){
+                    ewayBillName = "Please select file"
                 } else {
                     billedToError = null
                     shippedToError = null
@@ -255,8 +334,8 @@ fun AccountScreen(
                                     shippedTo = shippedTo,
                                     deliveryNote = deliveryNote,
                                     invoiceNumber = invoiceNumber,
-                                    deliveryBill = "",
-                                    ewayBill = ""
+                                    deliveryBill = deliveryBillPath,
+                                    ewayBill = ewayBillPath
                                 )
                             )
                         )
@@ -286,8 +365,8 @@ fun AccountScreen(
                                     shippedTo = shippedTo,
                                     billedTo = billedTo,
                                     deliveryNote = deliveryNote,
-                                    deliveryBill = "",
-                                    ewayBill = ""
+                                    deliveryBill = deliveryBillPath,
+                                    ewayBill = ewayBillPath
                                 )
                             ),
                             dispatchDepartment = if (completeResponse.dispatchDepartment.isEmpty()) ArrayList() else arrayListOf(

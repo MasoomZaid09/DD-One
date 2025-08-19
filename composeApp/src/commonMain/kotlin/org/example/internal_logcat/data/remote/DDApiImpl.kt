@@ -1,13 +1,23 @@
 package org.example.internal_logcat.data.remote
 
+import com.mohamedrejeb.calf.core.PlatformContext
+import com.mohamedrejeb.calf.io.KmpFile
+import com.mohamedrejeb.calf.io.getName
+import com.mohamedrejeb.calf.io.readByteArray
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.request.forms.MultiPartFormDataContent
+import io.ktor.client.request.forms.formData
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.Headers
+import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import org.example.internal_logcat.data.remote.api_routes.BASE_URL
 import org.example.internal_logcat.data.remote.api_routes.add_form_data
@@ -20,6 +30,8 @@ import org.example.internal_logcat.domain.models.response.DeviceDataResponse
 import org.example.internal_logcat.domain.models.response.FormResponse
 import org.example.internal_logcat.domain.models.response.LoginResponse
 import org.example.internal_logcat.domain.models.response.SingleDeviceResponse
+import org.example.internal_logcat.domain.models.response.UploadFileResponse
+import org.example.internal_logcat.utils.SharedLogger
 
 class DDApiImpl(private val client: HttpClient) : DDApi {
 
@@ -60,6 +72,35 @@ class DDApiImpl(private val client: HttpClient) : DDApi {
             contentType(ContentType.Application.Json)
             setBody(formRequest)
         }
+        return response.body()
+    }
+
+    override suspend fun uploadFile(file: KmpFile,context: PlatformContext): UploadFileResponse {
+
+        val bytes = file.readByteArray(context)
+        val fileName = file.getName(context)
+
+        // every time we need to upload file like that we need to use this method and content type need to pass is nessary
+        val response : HttpResponse=client.post(BASE_URL + api_routes.upload_file) {
+            setBody(
+                MultiPartFormDataContent(
+                    formData {
+                        append(
+                            "file",
+                            bytes,
+                            Headers.build {
+                                append(HttpHeaders.ContentType, "application/pdf")
+                                append(
+                                    HttpHeaders.ContentDisposition,
+                                    "filename=${fileName}"
+                                )
+                            }
+                        )
+                    }
+                )
+            )
+        }
+
         return response.body()
     }
 }

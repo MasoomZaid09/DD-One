@@ -11,7 +11,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material.Text
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,6 +25,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.arkivanov.decompose.ComponentContext
+import com.mohamedrejeb.calf.core.LocalPlatformContext
+import com.mohamedrejeb.calf.io.readByteArray
 import com.mohamedrejeb.calf.picker.FilePickerFileType
 import com.mohamedrejeb.calf.picker.FilePickerSelectionMode
 import com.mohamedrejeb.calf.picker.rememberFilePickerLauncher
@@ -30,6 +35,7 @@ import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.production_text
 import internallogcat.composeapp.generated.resources.rem_bold
 import internallogcat.composeapp.generated.resources.rem_medium
+import internallogcat.composeapp.generated.resources.rem_regular
 import internallogcat.composeapp.generated.resources.rem_semibold
 import internallogcat.composeapp.generated.resources.submit_text
 import kotlinx.coroutines.launch
@@ -41,12 +47,16 @@ import org.jetbrains.compose.resources.stringResource
 import org.example.internal_logcat.domain.models.request.FormRequest
 import org.example.internal_logcat.domain.models.request.ServiceDepartment
 import org.example.internal_logcat.domain.models.response.Data
+import org.example.internal_logcat.domain.models.response.File
 import org.example.internal_logcat.domain.models.response.ProductionDepartment
+import org.example.internal_logcat.domain.models.response.UploadFileResponse
+import org.example.internal_logcat.getPlatform
 import org.example.internal_logcat.presentation.ui.components_or_viewmodels.FormComponent
 import org.example.internal_logcat.presentation.ui.composables.RoundedEditTextNormal
 import org.example.internal_logcat.presentation.ui.composables.errorText
 import org.example.internal_logcat.utils.AppColors
 import org.example.internal_logcat.utils.SharedLogger
+import org.example.internal_logcat.utils.StateClass
 
 @Composable
 fun ProductionScreen(
@@ -62,13 +72,18 @@ fun ProductionScreen(
     val exhaleValveType = listOf("Reusable", "Disposable")
     val neoSensorType = listOf("Reusable", "Disposable")
 
+    val state by component.uploadFileResponse.collectAsState()
+    val context = LocalPlatformContext.current // ✅ Calf helper
+
     val scope = rememberCoroutineScope()
     val pickerLauncher = rememberFilePickerLauncher(
         type = FilePickerFileType.Pdf,
         selectionMode = FilePickerSelectionMode.Single,
         onResult = { files ->
             scope.launch {
-                SharedLogger.i(files[0].toString())
+                files.forEach {
+                    component.uploadFileOnServer(true,it,context)
+                }
             }
         }
     )
@@ -90,6 +105,11 @@ fun ProductionScreen(
     var selectedScreenSize by remember { mutableStateOf(response.screenSize) }
     var selectedExhaleValveType by remember { mutableStateOf(response.exhaleValveType) }
     var selectedNeoSensorType by remember { mutableStateOf(response.neoSensorType) }
+    var filePath by remember { mutableStateOf(response.dhrFile) }
+
+    var fileName by remember { mutableStateOf(
+        if (filePath.isNotEmpty()) filePath.split(".com")[1].split("/")[1] else ""
+    )}
 
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -317,6 +337,32 @@ fun ProductionScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        when(state){
+
+            is StateClass.UiState.Error -> {
+                fileName = "File Not Found"
+            }
+            is StateClass.UiState.Success -> {
+                filePath = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
+                fileName = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+            }
+            is StateClass.UiState.Idle -> {}
+            is StateClass.UiState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+        }
+
+        if (fileName.isNotEmpty()) {
+            Text(
+                text = fileName,
+                color = AppColors.errorColor,
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(Res.font.rem_regular)),
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
@@ -334,6 +380,8 @@ fun ProductionScreen(
                     softwareVersionError = "Please Enter Software Version"
                 } else if (description.isEmpty()) {
                     descriptionError = "Please Enter Description"
+                }else if (filePath.isEmpty()){
+                    fileName = "Please Select File"
                 } else {
                     serialNumberError = null
                     piMacAddressError = null
@@ -358,7 +406,7 @@ fun ProductionScreen(
                                     screenSize = selectedScreenSize,
                                     exhaleValveType = selectedExhaleValveType,
                                     neoSensorType = selectedNeoSensorType,
-                                    dhrFile = ""
+                                    dhrFile = filePath
                                 )
                             ),
                         )
@@ -380,7 +428,7 @@ fun ProductionScreen(
                                     screenSize = selectedScreenSize,
                                     exhaleValveType = selectedExhaleValveType,
                                     neoSensorType = selectedNeoSensorType,
-                                    dhrFile = ""
+                                    dhrFile = filePath
                                 )
                             ),
 

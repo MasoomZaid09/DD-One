@@ -16,7 +16,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,11 +56,13 @@ import org.example.internal_logcat.domain.models.request.FormRequest
 import org.example.internal_logcat.domain.models.request.ProductionDepartment
 import org.example.internal_logcat.domain.models.response.Data
 import org.example.internal_logcat.domain.models.response.ServiceDepartment
+import org.example.internal_logcat.domain.models.response.UploadFileResponse
 import org.example.internal_logcat.presentation.ui.components_or_viewmodels.FormComponent
 import org.example.internal_logcat.presentation.ui.composables.RoundedEditTextNormal
 import org.example.internal_logcat.presentation.ui.composables.errorText
 import org.example.internal_logcat.utils.AppColors
 import org.example.internal_logcat.utils.SharedLogger
+import org.example.internal_logcat.utils.StateClass
 
 @Composable
 fun ServiceEngineerScreen(
@@ -70,7 +74,17 @@ fun ServiceEngineerScreen(
     var serviceEngineerName by remember { mutableStateOf(response.serviceEngineerName) }
     var serviceEngineerNameError by remember { mutableStateOf<String?>(null) }
     var installationDate by remember { mutableStateOf(response.installationDate.ifEmpty { "Enter Installation Date" }) }
+    var installationDateError by remember { mutableStateOf<String?>(null) }
     var dispatchDate by remember { mutableStateOf(response.dispatchDate.ifEmpty { "Enter Dispatch Date" }) }
+    var dispatchDateError by remember { mutableStateOf<String?>(null) }
+    var filePath by remember { mutableStateOf(response.installationOrFeedbackReport) }
+
+    var fileName by remember { mutableStateOf(
+        if (filePath.isNotEmpty()) filePath.split(".com")[1].split("/")[1] else ""
+    )}
+
+    val state by component.uploadFileResponse.collectAsState()
+    val context = LocalPlatformContext.current
 
     val scope = rememberCoroutineScope()
     val pickerLauncher = rememberFilePickerLauncher(
@@ -78,7 +92,9 @@ fun ServiceEngineerScreen(
         selectionMode = FilePickerSelectionMode.Single,
         onResult = { files ->
             scope.launch {
-                SharedLogger.i(files.size.toString())
+                files.forEach {
+                    component.uploadFileOnServer(true,it,context)
+                }
             }
         }
     )
@@ -142,6 +158,8 @@ fun ServiceEngineerScreen(
             )
         }
 
+        installationDateError?.let { errorText(it) }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
@@ -168,6 +186,7 @@ fun ServiceEngineerScreen(
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             )
         }
+        dispatchDateError?.let { errorText(it) }
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -186,14 +205,49 @@ fun ServiceEngineerScreen(
             )
         }
 
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // getting state of file upload
+        when(state){
+
+            is StateClass.UiState.Error -> {
+                fileName = "File Not Found"
+            }
+            is StateClass.UiState.Success -> {
+                filePath = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
+                fileName = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+            }
+            is StateClass.UiState.Idle -> {}
+            is StateClass.UiState.Loading -> {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+            }
+        }
+
+        if (fileName.isNotEmpty()) {
+            Text(
+                text = fileName,
+                color = AppColors.errorColor,
+                fontSize = 12.sp,
+                fontFamily = FontFamily(Font(Res.font.rem_regular)),
+            )
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
                 if (serviceEngineerName.isEmpty()) {
                     serviceEngineerNameError = "Please Enter Name"
-                } else {
+                }else if (installationDate == "Enter Installation Date") {
+                    installationDateError = "Please select installation date"
+                }else if (dispatchDate == "Enter Dispatch Date") {
+                    dispatchDateError = "Please select dispatch date"
+                } else if (filePath.isEmpty()){
+                    fileName = "Please select file"
+                } else  {
                     serviceEngineerNameError = null
+                    installationDateError = null
+                    dispatchDateError = null
 
                     if (isNewDevice) {
 
@@ -203,7 +257,7 @@ fun ServiceEngineerScreen(
                                     serviceEngineerName = serviceEngineerName,
                                     installationDate = installationDate,
                                     dispatchDate = dispatchDate,
-                                    installationOrFeedbackReport = ""
+                                    installationOrFeedbackReport = filePath
                                 )
                             ),
                             )
@@ -250,7 +304,7 @@ fun ServiceEngineerScreen(
                                     installationDate = installationDate,
                                     dispatchDate = dispatchDate,
                                     serviceEngineerName = serviceEngineerName,
-                                    installationOrFeedbackReport = ""
+                                    installationOrFeedbackReport = filePath
                                 )
                             )
 
@@ -287,6 +341,7 @@ fun ServiceEngineerScreen(
             onDoneClick = {
                 stateOfInstallDatePicker = false
                 installationDate = it.toString()
+                installationDateError = null
             },
             onDismiss = {
                 stateOfInstallDatePicker = false
@@ -308,6 +363,7 @@ fun ServiceEngineerScreen(
             onDoneClick = {
                 stateOfDispatchDatePicker = false
                 dispatchDate = it.toString()
+                dispatchDateError = null
             },
             onDismiss = {
                 stateOfDispatchDatePicker = false

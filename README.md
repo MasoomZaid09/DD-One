@@ -25,5 +25,3 @@ A Kotlin Multiplatform (KMM) project for internal company operations — product
 
 <img width="1024" height="568" alt="cover 1" src="https://github.com/user-attachments/assets/52694103-6f54-478d-a118-a383992012e9" />
 
-
-## 📂 Project Structure

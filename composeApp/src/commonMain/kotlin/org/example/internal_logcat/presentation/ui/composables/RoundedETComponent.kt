@@ -16,21 +16,23 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.rem_regular
 import org.jetbrains.compose.resources.Font
 import org.example.internal_logcat.utils.AppColors
+import kotlin.math.absoluteValue
 
 
 @Composable
-fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Modifier , placeHolderText:String ) {
+fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Modifier , placeHolderText:String ,maxHeight: Dp) {
     return Box(modifier = modifier){
         TextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = placeHolderText, fontSize = 13.sp, fontFamily = FontFamily(Font(
+            placeholder = { Text(text = placeHolderText, fontSize = (maxHeight * 0.015f).value.sp, fontFamily = FontFamily(Font(
                 Res.font.rem_regular)), color = AppColors.textGrey) },
             modifier = Modifier
                 .fillMaxWidth()
@@ -45,7 +47,7 @@ fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Mo
                 disabledContainerColor = Color.Transparent
             ),
             textStyle = TextStyle(
-                fontSize = 13.sp,
+                fontSize = (maxHeight * 0.015f).value.sp,
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             ),

@@ -36,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.platform.LocalViewConfiguration
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -72,6 +73,7 @@ fun DashboardScreen(component: DashboardComponent) {
     var clickInOutButton by remember { mutableStateOf(false) }
     var openImagePicker by remember { mutableStateOf(false) }
 
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize().background(AppColors.whiteColor).padding(
             WindowInsets.safeDrawing.asPaddingValues()
@@ -97,7 +99,7 @@ fun DashboardScreen(component: DashboardComponent) {
                 Text(
                     text = stringResource(Res.string.header_text),
                     color = AppColors.textGrey,
-                    fontSize = 16.sp,
+                    fontSize = (maxHeight * 0.02f).value.sp,
                     fontFamily = FontFamily(Font(Res.font.rem_semibold)),
                 )
 
@@ -168,7 +170,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(maxHeight * 0.12f)
+                                            .height(maxHeight * 0.10f)
                                             .padding(
                                                 top = maxHeight * 0.01f,
                                                 bottom = maxHeight * 0.01f
@@ -187,7 +189,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                             Image(
                                                 painter = painterResource(Res.drawable.description_logo),
                                                 contentDescription = "Description Icon",
-                                                modifier = Modifier.fillMaxHeight()
+                                                modifier = Modifier.height(maxHeight * 0.05f)
                                                     .width(maxWidth * 0.10f)
                                             )
 
@@ -202,7 +204,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = 13.sp,
+                                                            fontSize = (maxHeight * 0.017f).value.sp,
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_regular
@@ -216,7 +218,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = 15.sp,
+                                                            fontSize = (maxHeight * 0.019f).value.sp,
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_semibold
@@ -234,7 +236,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = 13.sp,
+                                                            fontSize = (maxHeight * 0.017f).value.sp,
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_regular
@@ -248,7 +250,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = 15.sp,
+                                                            fontSize = (maxHeight * 0.019f).value.sp,
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_semibold
@@ -265,7 +267,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                             Image(
                                                 painter = painterResource(Res.drawable.edit_logo),
                                                 contentDescription = "Edit Icon",
-                                                modifier = Modifier.fillMaxHeight()
+                                                modifier = Modifier.height(maxHeight * 0.05f)
                                                     .width(maxWidth * 0.06f).clickable(
                                                         indication = null,
                                                         interactionSource = remember { MutableInteractionSource() }

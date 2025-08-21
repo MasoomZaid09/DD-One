@@ -81,6 +81,7 @@ compose-material = { module = "org.jetbrains.compose.material:material", version
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-ui-android = { group = "androidx.compose.ui", name = "ui-android", version.ref = "uiAndroid" }
 zxing-android-embedded = { module = "com.journeyapps:zxing-android-embedded", version.ref = "zxingAndroidEmbedded" }
+# If you're using TOML version catalog
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

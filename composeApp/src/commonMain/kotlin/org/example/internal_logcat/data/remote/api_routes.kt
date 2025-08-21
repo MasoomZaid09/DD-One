@@ -1,7 +1,7 @@
 package org.example.internal_logcat.data.remote
 
 object api_routes {
-    const val BASE_URL = " http://172.20.10.4:8000/"
+    const val BASE_URL = " http://172.23.100.118:8000/"
     const val upload_file = "api/s3/upload-delivery-file"
     const val login_route = "api/logger/auth/login"
     const val device_list = "api/delivery/get-machine-delivery-data"

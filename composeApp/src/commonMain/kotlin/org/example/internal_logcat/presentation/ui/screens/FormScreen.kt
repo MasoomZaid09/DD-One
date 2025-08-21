@@ -66,7 +66,7 @@ fun FormScreen(component: FormComponent) {
             BoxWithConstraints(modifier = Modifier.fillMaxSize().background(AppColors.whiteColor)) {
                 CircularProgressIndicator(
                     modifier = Modifier.align(Alignment.Center).height(maxHeight * 0.10f)
-                        .width(maxWidth * 0.20f),
+                        .width(maxWidth * 0.15f),
                     color = AppColors.themeGreenColor
                 )
             }

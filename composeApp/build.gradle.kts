@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
+import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -10,32 +11,10 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.kotlinCocoapods)
     kotlin("plugin.parcelize")
 }
 
 kotlin {
-
-    cocoapods {
-        summary = "Some description for the Shared Module"
-        version = "1.0"
-        homepage= "Line to the shared Module homepage"
-        // ios depoloymentTarget should be match with PodFile located in IosApp folder
-        ios.deploymentTarget = "15.4"
-        podfile = project.file("../iosApp/Podfile")
-        framework {
-            baseName = "ComposeApp"
-            isStatic = true
-            export("com.mohamedrejeb.calf:calf-ui:0.8.0")
-        }
-
-        // if any libs we use we write
-        // for example googlemap
-//        pod("GoogleMap") {
-//            version = libs.versions.nameofThatLibraryVersionvariable.get()
-//            extraOpts += listOf("-compiler-option","-fmodules")
-//        }
-    }
 
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
@@ -44,18 +23,16 @@ kotlin {
         }
     }
 
-    // must have to run on ios
-    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
-    listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
+    val frameworkName = "SharedModule"
+
+    listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
+        target.binaries.framework {
+            baseName = frameworkName
         }
     }
-
     sourceSets {
 
         val androidMain by getting {
@@ -136,7 +113,6 @@ kotlin {
             dependencies{
                 implementation(libs.ktor.client.darwin)
             }
-            iosX64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosArm64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosSimulatorArm64().compilations["main"].defaultSourceSet.dependsOn(this)
         }

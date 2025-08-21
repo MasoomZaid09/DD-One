@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.dd_logo
@@ -93,8 +94,7 @@ fun LoginScreen(component: LoginComponent) {
 
             else -> {
                 Column(
-                    modifier = Modifier.height(maxHeight).width(maxWidth)
-                        .padding(horizontal = maxWidth * 0.05f)
+                    modifier = Modifier.height(maxHeight).width(maxWidth).padding(horizontal = maxWidth * 0.05f)
                 ) {
                     Spacer(modifier = Modifier.height(maxHeight * 0.18f))
 
@@ -113,7 +113,7 @@ fun LoginScreen(component: LoginComponent) {
                     Text(
                         text = stringResource(Res.string.login_text),
                         color = AppColors.textGrey,
-                        fontSize = 20.sp,
+                        fontSize = (maxHeight * 0.02f).value.sp,
                         fontFamily = FontFamily(Font(Res.font.rem_semibold))
                     )
 
@@ -122,7 +122,7 @@ fun LoginScreen(component: LoginComponent) {
                     Text(
                         text = stringResource(Res.string.email_text),
                         color = AppColors.textGrey,
-                        fontSize = 13.sp,
+                        fontSize = (maxHeight * 0.015f).value.sp,
                         fontFamily = FontFamily(Font(Res.font.rem_medium))
                     )
 
@@ -139,7 +139,8 @@ fun LoginScreen(component: LoginComponent) {
                             .height(maxHeight * 0.065f)
                             .clip(shape = RoundedCornerShape(20))
                             .background(AppColors.editTextColor),
-                        "Enter your email"
+                        "Enter your email",
+                        maxHeight
                     )
 
                     emailError?.let { errorText(it) }
@@ -149,7 +150,7 @@ fun LoginScreen(component: LoginComponent) {
                     Text(
                         text = stringResource(Res.string.password_text),
                         color = AppColors.textGrey,
-                        fontSize = 13.sp,
+                        fontSize = (maxHeight * 0.015f).value.sp,
                         fontFamily = FontFamily(Font(Res.font.rem_medium))
                     )
 
@@ -166,7 +167,8 @@ fun LoginScreen(component: LoginComponent) {
                             .height(maxHeight * 0.065f)
                             .clip(shape = RoundedCornerShape(20))
                             .background(AppColors.editTextColor),
-                        "Enter your password"
+                        "Enter your password",
+                        maxHeight
                     )
                     passwordError?.let { errorText(it) }
 
@@ -194,7 +196,7 @@ fun LoginScreen(component: LoginComponent) {
                     ) {
                         Text(
                             text = stringResource(Res.string.login_text),
-                            fontSize = 14.sp,
+                            fontSize = (maxHeight * 0.018f).value.sp,
                             color = AppColors.whiteColor,
                             fontFamily = FontFamily(Font(Res.font.rem_bold))
                         )

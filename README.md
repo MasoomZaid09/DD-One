@@ -1,16 +1,26 @@
-This is a Kotlin Multiplatform project targeting Android, iOS.
+# Internal Production, Dispatch & Service Management (KMM)
 
-* [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
-  It contains several subfolders:
-  - [commonMain](./composeApp/src/commonMain/kotlin) is for code that’s common for all targets.
-  - Other folders are for Kotlin code that will be compiled for only the platform indicated in the folder name.
-    For example, if you want to use Apple’s CoreCrypto for the iOS part of your Kotlin app,
-    the [iosMain](./composeApp/src/iosMain/kotlin) folder would be the right place for such calls.
-    Similarly, if you want to edit the Desktop (JVM) specific part, the [jvmMain](./composeApp/src/jvmMain/kotlin)
-    folder is the appropriate location.
+A Kotlin Multiplatform (KMM) project for internal company operations — production tracking, dispatch scheduling, and service management — with shared business logic and UI for Android and iOS.
 
-* [/iosApp](./iosApp/iosApp) contains iOS applications. Even if you’re sharing your UI with Compose Multiplatform,
-  you need this entry point for your iOS app. This is also where you should add SwiftUI code for your project.
+## 📸 Screenshots
 
+<img width="1024" height="568" alt="cover 1" src="https://github.com/user-attachments/assets/52694103-6f54-478d-a118-a383992012e9" />
 
-Learn more about [Kotlin Multiplatform](https://www.jetbrains.com/help/kotlin-multiplatform-dev/get-started.html)…
+## 🚀 Features
+- Shared **UI logic** with [Decompose](https://github.com/arkivanov/Decompose)
+- API integration via [Ktor](https://ktor.io)
+- Dependency injection using [Koin](https://insert-koin.io)
+- Modular architecture for production, dispatch, and service flows
+- Common codebase for Android & iOS
+
+## 🛠 Tech Stack
+- **Kotlin Multiplatform**: Shared logic & UI components
+- **Ktor Client**: Networking
+- **Koin**: Dependency injection
+- **Decompose**: Component-based UI architecture
+- **Coroutines**: Asynchronous programming
+
+## 📦 Modules
+- **:shared** → Common logic, models, repositories, UI components
+- **:androidApp** → Android-specific UI (Jetpack Compose or XML)
+- **:iosApp** → iOS-specific integration (SwiftUI/UIKit)

@@ -1,9 +1,5 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
-import org.jetbrains.kotlin.gradle.plugin.mpp.NativeBuildType
-import org.jetbrains.kotlin.gradle.plugin.mpp.apple.XCFramework
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -15,7 +11,6 @@ plugins {
 }
 
 kotlin {
-
     androidTarget {
         @OptIn(ExperimentalKotlinGradlePluginApi::class)
         compilerOptions {
@@ -23,16 +18,17 @@ kotlin {
         }
     }
 
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
-    val frameworkName = "SharedModule"
-
-    listOf(iosArm64(), iosSimulatorArm64()).forEach { target ->
+    listOf(iosX64(),iosArm64(), iosSimulatorArm64()).forEach { target ->
         target.binaries.framework {
-            baseName = frameworkName
+            baseName = "ComposeApp"
+            isStatic = true
         }
     }
+
     sourceSets {
 
         val androidMain by getting {
@@ -52,8 +48,8 @@ kotlin {
             resources.srcDir("src/commonMain/resources")
             dependencies {
 
-                // calf for use view like file picker
-                // File picker ke liye
+//                // calf for use view like file picker
+//                // File picker ke liye
                 implementation(libs.calf.file.picker)
 
                 // Agar tumne calf-ui components ka use kiya hai to
@@ -61,16 +57,17 @@ kotlin {
 
                 // COMPOSE MULTIPLATFORM QR SCANNER
                 implementation(libs.qr.kit)
-
                 implementation(libs.calf.file.picker.coil)
                 implementation(libs.calf.file.picker)
                 implementation(libs.kmp.date.time.picker)
+
                 implementation(libs.multiplatform.settings.no.arg)
                 implementation(libs.multiplatform.settings)
                 implementation(libs.kermit)
                 implementation(compose.runtime)
                 implementation(compose.foundation)
-                implementation(compose.material3)
+                implementation(compose.material)
+//                implementation(compose.material3)
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.components.uiToolingPreview)
@@ -113,11 +110,13 @@ kotlin {
             dependencies{
                 implementation(libs.ktor.client.darwin)
             }
+            iosX64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosArm64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosSimulatorArm64().compilations["main"].defaultSourceSet.dependsOn(this)
         }
 
     }
+
 }
 
 android {
@@ -131,20 +130,24 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
     repositories {
         google()
         mavenCentral()

@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material.Text
+import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,22 +32,28 @@ fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Mo
         TextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = placeHolderText, fontSize = (maxHeight * 0.015f).value.sp, fontFamily = FontFamily(Font(
-                Res.font.rem_regular)), color = AppColors.textGrey) },
+            placeholder = {
+                Text(
+                    text = placeHolderText,
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily(Font(Res.font.rem_regular)),
+                    color = AppColors.textGrey
+                )
+            },
             modifier = Modifier
+                .fillMaxHeight()
                 .fillMaxWidth()
-                .fillMaxHeight().background(AppColors.editTextColor),
-
-            colors = TextFieldDefaults.colors(
+                .background(AppColors.editTextColor),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent
+                cursorColor = AppColors.themeGreenColor,
+                textColor = AppColors.textGrey
             ),
             textStyle = TextStyle(
-                fontSize = (maxHeight * 0.015f).value.sp,
+                fontSize = 13.sp,
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             ),
@@ -67,17 +73,25 @@ fun RoundedEditTextNormal(value : String,onValueChange: (String) -> Unit, placeH
         TextField(
             value = value,
             onValueChange = onValueChange,
-            placeholder = { Text(text = placeHolderText, fontSize = 13.sp, fontFamily = FontFamily(Font(Res.font.rem_regular)), color = AppColors.textGrey) },
+            placeholder = {
+                Text(
+                    text = placeHolderText,
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily(Font(Res.font.rem_regular)),
+                    color = AppColors.textGrey
+                )
+            },
             modifier = Modifier
-                .fillMaxHeight().fillMaxWidth().background(AppColors.editTextColor),
-
-            colors = TextFieldDefaults.colors(
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .background(AppColors.editTextColor),
+            colors = TextFieldDefaults.textFieldColors(
+                backgroundColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
                 disabledIndicatorColor = Color.Transparent,
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent
+                cursorColor = AppColors.themeGreenColor,
+                textColor = AppColors.textGrey
             ),
             textStyle = TextStyle(
                 fontSize = 13.sp,

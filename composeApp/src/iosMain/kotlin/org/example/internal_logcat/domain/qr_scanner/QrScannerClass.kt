@@ -3,7 +3,6 @@ package org.example.internal_logcat.domain.qr_scanner
 import kotlinx.cinterop.ExperimentalForeignApi
 import org.example.internal_logcat.utils.SharedLogger
 import platform.AVFoundation.*
-import platform.SharedWithYouCore.SharedWithYouCoreVersionNumber
 import platform.UIKit.*
 import platform.darwin.NSObject
 import platform.darwin.dispatch_get_main_queue

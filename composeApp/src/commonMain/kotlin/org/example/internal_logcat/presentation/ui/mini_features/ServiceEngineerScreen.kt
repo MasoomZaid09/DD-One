@@ -14,9 +14,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -194,7 +194,8 @@ fun ServiceEngineerScreen(
             onClick = {
                 pickerLauncher.launch()
             }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
-                containerColor = AppColors.buttonDarkGrey
+                backgroundColor = AppColors.buttonDarkGrey,
+                contentColor = AppColors.whiteColor
             ), modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
             Text(
@@ -314,7 +315,8 @@ fun ServiceEngineerScreen(
                     }
                 }
             }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
-                containerColor = AppColors.themeGreenColor
+                backgroundColor = AppColors.themeGreenColor,
+                contentColor = AppColors.whiteColor
             ), modifier = Modifier.fillMaxWidth().height(50.dp)
         ) {
             Text(

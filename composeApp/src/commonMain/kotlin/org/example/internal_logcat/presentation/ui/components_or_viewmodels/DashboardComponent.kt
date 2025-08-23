@@ -40,9 +40,7 @@ class DashboardComponent(
 
     // need to change for ios from onResume to init because ios lifecycle has different method for that
     init {
-        lifecycle.doOnResume {
-            deviceListApi()
-        }
+        deviceListApi()
     }
 
     fun sendDataToFormPage(data: String, isNewDevice: Boolean) {

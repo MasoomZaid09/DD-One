@@ -12,9 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Text
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -78,20 +78,34 @@ fun DropDownCustom(options: List<String>) :String{
             modifier = Modifier.background(AppColors.editTextColor)
         ) {
             options.forEach { label ->
+//                DropdownMenuItem(
+//                    text = {
+//                        Text(
+//                            text = label,
+//                            color = AppColors.textGrey,
+//                            fontSize = 13.sp,
+//                            fontFamily = FontFamily(Font(Res.font.rem_regular))
+//                        )
+//                    },
+//                    onClick = {
+//                        selectedOption = label
+//                        expanded = false
+//                    }
+//                )
+
                 DropdownMenuItem(
-                    text = {
-                        Text(
-                            text = label,
-                            color = AppColors.textGrey,
-                            fontSize = 13.sp,
-                            fontFamily = FontFamily(Font(Res.font.rem_regular))
-                        )
-                    },
                     onClick = {
                         selectedOption = label
                         expanded = false
                     }
-                )
+                ) {
+                    Text(
+                        text = label,
+                        color = AppColors.textGrey,
+                        fontSize = 13.sp,
+                        fontFamily = FontFamily(Font(Res.font.rem_regular))
+                    )
+                }
             }
         }
     }

@@ -22,10 +22,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Text
+import androidx.compose.material.Card
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -176,8 +175,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                 bottom = maxHeight * 0.01f
                                             ),
                                         shape = RoundedCornerShape(20.dp),
-                                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-                                        colors = CardDefaults.cardColors(containerColor = AppColors.editTextColor)
+                                        backgroundColor = AppColors.editTextColor
                                     ) {
                                         Row(
                                             modifier = Modifier

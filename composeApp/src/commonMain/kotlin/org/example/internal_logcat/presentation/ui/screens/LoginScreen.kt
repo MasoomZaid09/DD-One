@@ -13,9 +13,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -176,7 +176,6 @@ fun LoginScreen(component: LoginComponent) {
 
                     Button(
                         onClick = {
-
                             if (!Validator.isValidEmail(email)) {
                                 emailError = "Email is not valid"
                             } else if (!Validator.isValidPassword(pass)) {
@@ -187,8 +186,12 @@ fun LoginScreen(component: LoginComponent) {
 
                         },
                         shape = RoundedCornerShape(20),
+//                        colors = ButtonDefaults.buttonColors(
+//                            containerColor = AppColors.themeGreenColor
+//                        ),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = AppColors.themeGreenColor
+                            backgroundColor = AppColors.themeGreenColor,
+                            contentColor = AppColors.whiteColor // optional
                         ),
                         modifier = Modifier
                             .fillMaxWidth()

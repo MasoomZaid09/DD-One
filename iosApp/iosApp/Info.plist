@@ -2,14 +2,40 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
     <dict>
-        <key>CADisableMinimumFrameDurationOnPhone</key>
-        <true/>
 
-        <!-- Allow all HTTP traffic -->
+        <!-- ✅ Basic App Info -->
+        <key>CFBundleName</key>
+        <string>iosApp</string>
+
+        <key>CFBundleIdentifier</key>
+        <string>com.yourcompany.iosApp</string>
+
+        <key>CFBundleDisplayName</key>
+        <string>iosApp</string>
+
+        <key>CFBundleShortVersionString</key>
+        <string>1.0</string>
+
+        <key>CFBundleVersion</key>
+        <string>1</string>
+
+        <!-- ✅ HTTP Permission -->
         <key>NSAppTransportSecurity</key>
         <dict>
             <key>NSAllowsArbitraryLoads</key>
             <true/>
         </dict>
+
+        <!-- ✅ Camera & Photo Permissions -->
+        <key>NSCameraUsageDescription</key>
+        <string>Internal_Logcat camera description.</string>
+
+        <key>NSPhotoLibraryUsageDescription</key>
+        <string>Internal_Logcat photos description.</string>
+
+        <!-- ✅ Optional: Improves animation performance -->
+        <key>CADisableMinimumFrameDurationOnPhone</key>
+        <true/>
+
     </dict>
 </plist>

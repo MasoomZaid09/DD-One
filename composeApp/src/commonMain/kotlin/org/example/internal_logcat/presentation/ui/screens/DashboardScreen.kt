@@ -26,6 +26,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +43,9 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.description_logo
 import internallogcat.composeapp.generated.resources.edit_logo
@@ -53,6 +57,7 @@ import internallogcat.composeapp.generated.resources.out_logo
 import internallogcat.composeapp.generated.resources.rem_medium
 import internallogcat.composeapp.generated.resources.rem_regular
 import internallogcat.composeapp.generated.resources.rem_semibold
+import org.example.internal_logcat.domain.lifecycle.OnLifeCycleEvent
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
@@ -62,6 +67,7 @@ import org.example.internal_logcat.presentation.ui.components_or_viewmodels.Dash
 import org.example.internal_logcat.utils.AppColors
 import org.example.internal_logcat.utils.SharedLogger
 import org.example.internal_logcat.utils.StateClass
+import qrgenerator.qrkitpainter.event
 import qrscanner.QrScanner
 
 @Composable
@@ -72,6 +78,10 @@ fun DashboardScreen(component: DashboardComponent) {
     var clickInOutButton by remember { mutableStateOf(false) }
     var openImagePicker by remember { mutableStateOf(false) }
 
+    // best practice fir use common lifecycle
+    OnLifeCycleEvent { event ->
+        if (event == Lifecycle.Event.ON_RESUME) component.deviceListApi()
+    }
 
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize().background(AppColors.whiteColor).padding(

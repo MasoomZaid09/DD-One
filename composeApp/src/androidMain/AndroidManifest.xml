@@ -9,20 +9,20 @@
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
     <application
-        android:name="DDApplicationClass"
+        android:name="org.dd_healthcare.internal_logcat.DDApplicationClass"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
-        <activity android:name=".CameraXScanningActivity"
+        <activity android:name="org.dd_healthcare.internal_logcat.CameraXScanningActivity"
             android:screenOrientation="portrait"
             tools:replace="android:screenOrientation"
             android:stateNotNeeded="true"/>
         <activity
             android:exported="true"
-            android:name=".MainActivity"
+            android:name="org.dd_healthcare.internal_logcat.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -120,11 +120,11 @@ kotlin {
 }
 
 android {
-    namespace = "org.example.internal_logcat"
+    namespace = "org.dd_healthcare.internal_logcat"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.example.internal_logcat"
+        applicationId = "org.dd_healthcare.internal_logcat"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1

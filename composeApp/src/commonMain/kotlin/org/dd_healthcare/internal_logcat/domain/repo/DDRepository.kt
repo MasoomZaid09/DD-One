@@ -1,0 +1,21 @@
+package org.dd_healthcare.internal_logcat.domain.repo
+
+import com.mohamedrejeb.calf.core.PlatformContext
+import com.mohamedrejeb.calf.io.KmpFile
+import org.dd_healthcare.internal_logcat.domain.models.request.FormRequest
+import org.dd_healthcare.internal_logcat.domain.models.response.DeviceDataResponse
+import org.dd_healthcare.internal_logcat.domain.models.response.FormResponse
+import org.dd_healthcare.internal_logcat.domain.models.response.LoginResponse
+import org.dd_healthcare.internal_logcat.domain.models.response.SingleDeviceResponse
+import org.dd_healthcare.internal_logcat.domain.models.response.UploadFileResponse
+import org.dd_healthcare.internal_logcat.utils.StateClass
+
+interface DDRepository {
+
+    suspend fun loginApi(email:String,pass:String) : StateClass.UiState<LoginResponse>
+    suspend fun devicesListApi() : StateClass.UiState<DeviceDataResponse>
+    suspend fun addFormData(formRequest: FormRequest) : StateClass.UiState<FormResponse>
+    suspend fun fetchFormData(id:String) : StateClass.UiState<SingleDeviceResponse>
+    suspend fun updateFormData(id:String,formRequest: FormRequest) : StateClass.UiState<FormResponse>
+    suspend fun uploadFile(file: KmpFile,context: PlatformContext) : StateClass.UiState<UploadFileResponse>
+}

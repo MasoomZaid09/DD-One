@@ -109,6 +109,10 @@ kotlin {
             dependsOn(commonMain)
             dependencies{
                 implementation(libs.ktor.client.darwin)
+                implementation(compose.ui)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.runtime)
             }
             iosX64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosArm64().compilations["main"].defaultSourceSet.dependsOn(this)
@@ -127,7 +131,7 @@ android {
         applicationId = "org.dd_healthcare.internal_logcat"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
+        versionCode = 4
         versionName = "1.0"
     }
 

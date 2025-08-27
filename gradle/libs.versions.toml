@@ -30,11 +30,13 @@ constraintlayout = "2.2.1"
 extensionsComposeJetbrains = "2.1.4-compose-experimental"
 decompose = "2.2.0-alpha03"
 uiAndroid = "1.8.3"
+uiInterop = "1.5.10"
 zxingAndroidEmbedded = "4.3.0"
 
 [libraries]
 androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref = "androidx-activity" }
 #cmptoast = { module = "network.chaintech:cmptoast", version.ref = "cmptoast" }
+androidx-ui-interop = { module = "androidx.compose.ui:ui-interop", version.ref = "uiInterop" }
 calf-file-picker = { module = "com.mohamedrejeb.calf:calf-file-picker", version.ref = "calfFilePicker" }
 calf-file-picker-coil = { module = "com.mohamedrejeb.calf:calf-file-picker-coil", version.ref = "calfFilePicker" }
 calf-ui = { module = "com.mohamedrejeb.calf:calf-ui", version.ref = "calfFilePicker" }

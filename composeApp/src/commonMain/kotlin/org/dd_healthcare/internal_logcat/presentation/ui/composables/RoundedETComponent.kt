@@ -23,10 +23,11 @@ import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.rem_regular
 import org.jetbrains.compose.resources.Font
 import org.dd_healthcare.internal_logcat.utils.AppColors
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 
 @Composable
-fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Modifier , placeHolderText:String ,maxHeight: Dp) {
+fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Modifier , placeHolderText:String ,fontSize: Dp) {
     return Box(modifier = modifier){
         TextField(
             value = value,
@@ -34,7 +35,7 @@ fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Mo
             placeholder = {
                 Text(
                     text = placeHolderText,
-                    fontSize = 13.sp,
+                    fontSize = fixedSp(fontSize),
                     fontFamily = FontFamily(Font(Res.font.rem_regular)),
                     color = AppColors.textGrey
                 )
@@ -52,7 +53,7 @@ fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Mo
                 textColor = AppColors.textGrey
             ),
             textStyle = TextStyle(
-                fontSize = 13.sp,
+                fontSize = fixedSp(fontSize),
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             ),
@@ -62,7 +63,7 @@ fun RoundedEditText(value : String,onValueChange: (String) -> Unit, modifier: Mo
 }
 
 @Composable
-fun RoundedEditTextNormal(value : String,onValueChange: (String) -> Unit, placeHolderText:String ) {
+fun RoundedEditTextNormal(value : String,onValueChange: (String) -> Unit, placeHolderText:String ,fontSize: Dp = 14.dp) {
     return Box(
 
         contentAlignment = Alignment.Center,
@@ -75,7 +76,7 @@ fun RoundedEditTextNormal(value : String,onValueChange: (String) -> Unit, placeH
             placeholder = {
                 Text(
                     text = placeHolderText,
-                    fontSize = 13.sp,
+                    fontSize = fixedSp(fontSize),
                     fontFamily = FontFamily(Font(Res.font.rem_regular)),
                     color = AppColors.textGrey
                 )
@@ -93,7 +94,7 @@ fun RoundedEditTextNormal(value : String,onValueChange: (String) -> Unit, placeH
                 textColor = AppColors.textGrey
             ),
             textStyle = TextStyle(
-                fontSize = 13.sp,
+                fontSize = fixedSp(fontSize),
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             ),

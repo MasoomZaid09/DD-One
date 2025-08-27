@@ -304,7 +304,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = iosApp;
+				INFOPLIST_KEY_CFBundleDisplayName = "DD One";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Internal_Logcat camera description.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Internal_Logcat photos description.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -341,7 +341,7 @@
 				);
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = iosApp;
+				INFOPLIST_KEY_CFBundleDisplayName = "DD One";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Internal_Logcat camera description.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Internal_Logcat photos description.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

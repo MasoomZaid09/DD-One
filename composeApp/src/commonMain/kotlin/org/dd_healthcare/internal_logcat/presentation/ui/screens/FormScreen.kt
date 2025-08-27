@@ -4,19 +4,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -47,6 +48,7 @@ import org.dd_healthcare.internal_logcat.presentation.ui.components_or_viewmodel
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
+import org.dd_healthcare.internal_logcat.utils.keyboardSafeArea
 
 @Composable
 fun FormScreen(component: FormComponent) {
@@ -83,10 +85,18 @@ fun FormScreen(component: FormComponent) {
 
 @Composable
 fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
-    Box(
-        modifier = Modifier.fillMaxSize().background(AppColors.whiteColor)
+    // consumeWindowInsects is used for prevent UI shrink while keyboard appears
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
+            .background(AppColors.whiteColor)
+//            .consumeWindowInsets(WindowInsets.ime)
             .padding(WindowInsets.safeDrawing.asPaddingValues())
+//            .padding(WindowInsets.ime.asPaddingValues())
+//            .imePadding()
     ) {
+
+        val maxHeight = maxHeight
+        val maxWidth = maxWidth
 
         // top bar
         Column(
@@ -94,19 +104,20 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
             horizontalAlignment = Alignment.Start
         ) {
 
-            Spacer(modifier = Modifier.fillMaxHeight(0.001f))
+            Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
             Image(
                 painter = painterResource(Res.drawable.back_logo),
                 contentDescription = "Back Icon",
                 modifier = Modifier
-                    .size(80.dp).clickable(
+                    .width(maxWidth * 0.25f).height(maxHeight * 0.05f).clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
                         component.navigateBack()
                     }
             )
+            Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
             // when we add new device using QR code
             if (component.isNewDevice) {
@@ -128,26 +139,26 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                     type = "Demo"
                 )
 
-                InfoLoggingFormStatus(1)
+                InfoLoggingFormStatus(1, maxHeight, maxWidth)
 
                 Spacer(modifier = Modifier.height(20.dp))
 
                 when (sharedPreferences.getUserType()) {
 
                     "Production" -> {
-                        ProductionScreen(component, responseProduction, true, Data())
+                        ProductionScreen(component, responseProduction, true, Data(),maxHeight)
                     }
 
                     "Accounts" -> {
-                        AccountScreen(component, AccountDepartment(), true, Data())
+                        AccountScreen(component, AccountDepartment(), true, Data(),maxHeight)
                     }
 
                     "Dispatch" -> {
-                        DispatchScreen(component, DispatchDepartment(), true, Data())
+                        DispatchScreen(component, DispatchDepartment(), true, Data(),maxHeight)
                     }
 
                     "Support" -> {
-                        ServiceEngineerScreen(component, ServiceDepartment(), true, Data())
+                        ServiceEngineerScreen(component, ServiceDepartment(), true, Data(),maxHeight)
                     }
                 }
             }
@@ -177,24 +188,25 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
 
                     is StateClass.UiState.Idle -> {}
                     is StateClass.UiState.Success -> {
-                        val response = (singleDeviceResponse as StateClass.UiState.Success<SingleDeviceResponse>).data.data
+                        val response =
+                            (singleDeviceResponse as StateClass.UiState.Success<SingleDeviceResponse>).data.data
 
                         var statusNumber = 0
-                        if (response.productionDepartment.isNotEmpty()){
+                        if (response.productionDepartment.isNotEmpty()) {
                             statusNumber++
                         }
-                        if (response.accountDepartment.isNotEmpty()){
+                        if (response.accountDepartment.isNotEmpty()) {
                             statusNumber++
                         }
-                        if (response.dispatchDepartment.isNotEmpty()){
+                        if (response.dispatchDepartment.isNotEmpty()) {
                             statusNumber++
                         }
-                        if (response.serviceDepartment.isNotEmpty()){
+                        if (response.serviceDepartment.isNotEmpty()) {
                             statusNumber++
                         }
 
                         SharedLogger.i("StatusNumber : $statusNumber | Response : $response")
-                        InfoLoggingFormStatus(statusNumber)
+                        InfoLoggingFormStatus(statusNumber, maxHeight, maxWidth)
 
                         Spacer(modifier = Modifier.height(20.dp))
 
@@ -205,7 +217,8 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                                     component,
                                     response.productionDepartment[0],
                                     false,
-                                    response
+                                    response,
+                                    maxHeight
                                 )
                             }
 
@@ -214,7 +227,8 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                                     component,
                                     if (response.accountDepartment.isEmpty()) AccountDepartment() else response.accountDepartment[0],
                                     false,
-                                    response
+                                    response,
+                                    maxHeight
                                 )
                             }
 
@@ -223,7 +237,8 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                                     component,
                                     if (response.dispatchDepartment.isEmpty()) DispatchDepartment() else response.dispatchDepartment[0],
                                     false,
-                                    response
+                                    response,
+                                    maxHeight
                                 )
                             }
 
@@ -232,7 +247,8 @@ fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
                                     component,
                                     if (response.serviceDepartment.isEmpty()) ServiceDepartment() else response.serviceDepartment[0],
                                     false,
-                                    response
+                                    response,
+                                    maxHeight
                                 )
                             }
                         }

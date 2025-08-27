@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.calf.core.LocalPlatformContext
@@ -53,13 +54,15 @@ import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 @Composable
 fun AccountScreen(
     component: FormComponent,
     response: org.dd_healthcare.internal_logcat.domain.models.response.AccountDepartment,
     isNewDevice: Boolean,
-    completeResponse : Data
+    completeResponse: Data,
+    maxHeight: Dp
 ) {
 
     var billedTo by remember { mutableStateOf(response.billedTo) }
@@ -77,9 +80,18 @@ fun AccountScreen(
 
     SharedLogger.i("Path : $deliveryBillPath , $ewayBillPath")
 
-    var deliveryBillName by remember { mutableStateOf(if (deliveryBillPath.isNotEmpty()) deliveryBillPath.split(".com")[1].split("/")[1] else "")}
-    var ewayBillName by remember { mutableStateOf(
-        if (ewayBillPath.isNotEmpty()) ewayBillPath.split(".com")[1].split("/")[1] else "")}
+    var deliveryBillName by remember {
+        mutableStateOf(
+            if (deliveryBillPath.isNotEmpty()) deliveryBillPath.split(
+                ".com"
+            )[1].split("/")[1] else ""
+        )
+    }
+    var ewayBillName by remember {
+        mutableStateOf(
+            if (ewayBillPath.isNotEmpty()) ewayBillPath.split(".com")[1].split("/")[1] else ""
+        )
+    }
     val context = LocalPlatformContext.current
 
     val stateFirst by component.uploadFileResponse.collectAsState()
@@ -92,11 +104,10 @@ fun AccountScreen(
         onResult = { files ->
             scopeDeliveryNote.launch {
                 files.forEach {
-                    component.uploadFileOnServer(true,it,context)
+                    component.uploadFileOnServer(true, it, context)
                 }
             }
-        }
-    )
+        })
 
     val scopeEwayBill = rememberCoroutineScope()
     val picEwayBill = rememberFilePickerLauncher(
@@ -105,11 +116,10 @@ fun AccountScreen(
         onResult = { files ->
             scopeEwayBill.launch {
                 files.forEach {
-                    component.uploadFileOnServer(false,it,context)
+                    component.uploadFileOnServer(false, it, context)
                 }
             }
-        }
-    )
+        })
 
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
@@ -119,132 +129,134 @@ fun AccountScreen(
         Text(
             text = stringResource(Res.string.account_text),
             color = AppColors.textGrey,
-            fontSize = 15.sp,
+            fontSize = fixedSp(maxHeight * 0.02f),
             fontFamily = FontFamily(Font(Res.font.rem_semibold)),
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.03f))
 
         Text(
             text = "Billed To",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
-        Spacer(modifier = Modifier.height(7.dp))
+        RoundedEditTextNormal(
+            billedTo, onValueChange = {
+                billedTo = it
+                billedToError = null
+            }, "Enter Billed To", maxHeight * 0.017f
+        )
+        billedToError?.let { errorText(it, (maxHeight * 0.016f)) }
 
-        RoundedEditTextNormal(billedTo, onValueChange = {
-            billedTo = it
-            billedToError = null
-        }, "Enter Billed To")
-        billedToError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Shipped to",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
-        Spacer(modifier = Modifier.height(7.dp))
-
-        RoundedEditTextNormal(shippedTo, onValueChange = {
-            shippedTo = it
-            shippedToError = null
-        }, "Enter Shipped To")
-        shippedToError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        RoundedEditTextNormal(
+            shippedTo, onValueChange = {
+                shippedTo = it
+                shippedToError = null
+            }, "Enter Shipped To", maxHeight * 0.017f
+        )
+        shippedToError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Invoice Number",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             invoiceNumber, onValueChange = {
                 invoiceNumber = it
                 invoiceNumberError = null
-            }, "Enter Invoice Number"
+            }, "Enter Invoice Number", maxHeight * 0.017f
         )
-        invoiceNumberError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        invoiceNumberError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Amount",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
-
-        RoundedEditTextNormal(amount, onValueChange = {
-            amount = it
-            amountError = null
-        }, "Enter Amount")
-        amountError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
+        RoundedEditTextNormal(
+            amount, onValueChange = {
+                amount = it
+                amountError = null
+            }, "Enter Amount", maxHeight * 0.017f
+        )
+        amountError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Delivery Note",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             deliveryNote, onValueChange = {
                 deliveryNote = it
                 deliveryNoteError = null
-            }, "Enter Delivery Note"
+            }, "Enter Delivery Note", maxHeight * 0.017f
         )
-        deliveryNoteError?.let { errorText(it) }
+        deliveryNoteError?.let { errorText(it, (maxHeight * 0.016f)) }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
                 picDeliveryNote.launch()
-            }, shape = RoundedCornerShape(20),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppColors.buttonDarkGrey,
-                contentColor = AppColors.whiteColor
-            ), modifier = Modifier.fillMaxWidth().height(50.dp)
+            }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
+                backgroundColor = AppColors.buttonDarkGrey, contentColor = AppColors.whiteColor
+            ), modifier = Modifier.fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = "UPLOAD DELIVERY/RECEIVE NOTE",
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
-        when(stateFirst){
+        when (stateFirst) {
 
             is StateClass.UiState.Error -> {
                 deliveryBillName = "File Not Found"
             }
+
             is StateClass.UiState.Success -> {
-                deliveryBillPath = (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
-                deliveryBillName = (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+                deliveryBillPath =
+                    (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.path
+                        ?: ""
+                deliveryBillName =
+                    (stateFirst as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName
+                        ?: ""
             }
+
             is StateClass.UiState.Idle -> {}
             is StateClass.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally),color = AppColors.themeGreenColor)
             }
         }
 
@@ -252,44 +264,48 @@ fun AccountScreen(
             Text(
                 text = deliveryBillName,
                 color = AppColors.errorColor,
-                fontSize = 12.sp,
+                fontSize = fixedSp(maxHeight * 0.016f),
                 fontFamily = FontFamily(Font(Res.font.rem_regular)),
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
                 picEwayBill.launch()
-            }, shape = RoundedCornerShape(20),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppColors.buttonDarkGrey,
-                contentColor = AppColors.whiteColor
-            ), modifier = Modifier.fillMaxWidth().height(50.dp)
+            }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
+                backgroundColor = AppColors.buttonDarkGrey, contentColor = AppColors.whiteColor
+            ), modifier = Modifier.fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = "UPLOAD EWAY BILL",
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
-        when(stateSecond){
+        when (stateSecond) {
 
             is StateClass.UiState.Error -> {
                 ewayBillName = "File Not Found"
             }
+
             is StateClass.UiState.Success -> {
-                ewayBillPath = (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
-                ewayBillName = (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+                ewayBillPath =
+                    (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.path
+                        ?: ""
+                ewayBillName =
+                    (stateSecond as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName
+                        ?: ""
             }
+
             is StateClass.UiState.Idle -> {}
             is StateClass.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally),color = AppColors.themeGreenColor)
             }
         }
 
@@ -297,13 +313,12 @@ fun AccountScreen(
             Text(
                 text = ewayBillName,
                 color = AppColors.errorColor,
-                fontSize = 12.sp,
+                fontSize = fixedSp(maxHeight * 0.016f),
                 fontFamily = FontFamily(Font(Res.font.rem_regular)),
             )
         }
 
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -317,9 +332,9 @@ fun AccountScreen(
                     amountError = "Please Enter Amount"
                 } else if (deliveryNote.isEmpty()) {
                     deliveryNoteError = "Please Enter Delivery Note"
-                }else if (deliveryBillPath.isEmpty()){
+                } else if (deliveryBillPath.isEmpty()) {
                     deliveryBillName = "Please select file"
-                }else if (ewayBillPath.isEmpty()){
+                } else if (ewayBillPath.isEmpty()) {
                     ewayBillName = "Please select file"
                 } else {
                     billedToError = null
@@ -344,7 +359,7 @@ fun AccountScreen(
                         )
 
                         component.addDeviceUsingForm(formRequest)
-                    }else {
+                    } else {
                         val formRequest = FormRequest(
                             productionDepartment = if (completeResponse.productionDepartment.isEmpty()) ArrayList() else arrayListOf(
                                 ProductionDepartment(
@@ -394,20 +409,18 @@ fun AccountScreen(
                         component.updateDeviceUsingForm(completeResponse.id, formRequest)
                     }
                 }
-            }, shape = RoundedCornerShape(20),
-            colors = ButtonDefaults.buttonColors(
-                backgroundColor = AppColors.themeGreenColor,
-                contentColor = AppColors.whiteColor
-            ), modifier = Modifier.fillMaxWidth().height(50.dp)
+            }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
+                backgroundColor = AppColors.themeGreenColor, contentColor = AppColors.whiteColor
+            ), modifier = Modifier.fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = stringResource(Res.string.submit_text),
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
     }
 }

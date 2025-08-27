@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import internallogcat.composeapp.generated.resources.Res
@@ -41,13 +42,15 @@ import org.dd_healthcare.internal_logcat.presentation.ui.components_or_viewmodel
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.RoundedEditTextNormal
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 @Composable
 fun DispatchScreen(
     component: FormComponent,
     response: DispatchDepartment,
     isNewDevice: Boolean,
-    completeResponse: Data
+    completeResponse: Data,
+    maxHeight: Dp
 ) {
 
     var hospitalName by remember { mutableStateOf(response.hospitalName) }
@@ -67,79 +70,85 @@ fun DispatchScreen(
         Text(
             text = stringResource(Res.string.dispatch_text),
             color = AppColors.textGrey,
-            fontSize = 15.sp,
+            fontSize = fixedSp(maxHeight * 0.02f),
             fontFamily = FontFamily(Font(Res.font.rem_semibold)),
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.03f))
 
         Text(
             text = "Hospital Name",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(hospitalName, onValueChange = {
             hospitalName = it
             hospitalNameError = null
-        }, "Enter Hospital Name")
-        hospitalNameError?.let { errorText(it) }
+        }, "Enter Hospital Name",
+            maxHeight * 0.017f)
 
+        hospitalNameError?.let { errorText(it,(maxHeight * 0.016f)) }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Address",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(address, onValueChange = {
             address = it
             addressError = null
-        }, "Enter Address")
-        addressError?.let { errorText(it) }
+        }, "Enter Address",
+            maxHeight * 0.017f)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        addressError?.let { errorText(it,(maxHeight * 0.016f)) }
+
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "City",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(city, onValueChange = {
             city = it
             cityError = null
-        }, "Enter City")
-        cityError?.let { errorText(it) }
-        Spacer(modifier = Modifier.height(20.dp))
+        }, "Enter City",
+            maxHeight * 0.017f)
+        cityError?.let { errorText(it,(maxHeight * 0.016f)) }
+
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "State",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(state, onValueChange = {
             state = it
             stateError = null
-        }, "State")
-        stateError?.let { errorText(it) }
+        }, "State",
+            maxHeight * 0.017f)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        stateError?.let { errorText(it,(maxHeight * 0.016f)) }
+
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -229,16 +238,16 @@ fun DispatchScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(maxHeight * 0.065f)
         ) {
             Text(
                 text = stringResource(Res.string.submit_text),
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
     }
 }

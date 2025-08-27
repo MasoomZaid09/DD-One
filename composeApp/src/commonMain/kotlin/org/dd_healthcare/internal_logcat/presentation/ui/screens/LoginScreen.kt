@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.dd_logo
@@ -48,6 +49,7 @@ import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.StateClass
 import org.dd_healthcare.internal_logcat.utils.Validator
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 @Composable
 fun LoginScreen(component: LoginComponent) {
@@ -66,6 +68,9 @@ fun LoginScreen(component: LoginComponent) {
         modifier = Modifier
             .fillMaxSize()
             .background(AppColors.whiteColor),
+//            .pointerInput(Unit){
+//                detectTapGestures { hideKeyboard() }
+//            },
     ) {
 
         val maxWidth = maxWidth
@@ -114,7 +119,7 @@ fun LoginScreen(component: LoginComponent) {
                     Text(
                         text = stringResource(Res.string.login_text),
                         color = AppColors.textGrey,
-                        fontSize = (maxHeight * 0.02f).value.sp,
+                        fontSize = fixedSp(maxHeight * 0.02f),
                         fontFamily = FontFamily(Font(Res.font.rem_semibold))
                     )
 
@@ -123,7 +128,7 @@ fun LoginScreen(component: LoginComponent) {
                     Text(
                         text = stringResource(Res.string.email_text),
                         color = AppColors.textGrey,
-                        fontSize = (maxHeight * 0.015f).value.sp,
+                        fontSize = fixedSp(maxHeight * 0.015f),
                         fontFamily = FontFamily(Font(Res.font.rem_medium))
                     )
 
@@ -141,17 +146,17 @@ fun LoginScreen(component: LoginComponent) {
                             .clip(shape = RoundedCornerShape(20))
                             .background(AppColors.editTextColor),
                         "Enter your email",
-                        maxHeight
+                        (maxHeight * 0.015f)
                     )
 
-                    emailError?.let { errorText(it) }
+                    emailError?.let { errorText(it,(maxHeight * 0.014f)) }
 
                     Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
                     Text(
                         text = stringResource(Res.string.password_text),
                         color = AppColors.textGrey,
-                        fontSize = (maxHeight * 0.015f).value.sp,
+                        fontSize = fixedSp(maxHeight * 0.015f),
                         fontFamily = FontFamily(Font(Res.font.rem_medium))
                     )
 
@@ -169,16 +174,16 @@ fun LoginScreen(component: LoginComponent) {
                             .clip(shape = RoundedCornerShape(20))
                             .background(AppColors.editTextColor),
                         "Enter your password",
-                        maxHeight
+                        (maxHeight * 0.015f)
                     )
-                    passwordError?.let { errorText(it) }
+                    passwordError?.let { errorText(it,(maxHeight * 0.014f)) }
 
                     Spacer(modifier = Modifier.height(maxHeight * 0.07f))
 
                     Button(
                         onClick = {
                             if (!Validator.isValidEmail(email)) {
-                                emailError = "Email is not valid"
+                                emailError = "Enter Your Email"
                             } else if (!Validator.isValidPassword(pass)) {
                                 passwordError = "Incorrect password"
                             } else {
@@ -187,9 +192,7 @@ fun LoginScreen(component: LoginComponent) {
 
                         },
                         shape = RoundedCornerShape(20),
-//                        colors = ButtonDefaults.buttonColors(
-//                            containerColor = AppColors.themeGreenColor
-//                        ),
+
                         colors = ButtonDefaults.buttonColors(
                             backgroundColor = AppColors.themeGreenColor,
                             contentColor = AppColors.whiteColor // optional
@@ -200,7 +203,7 @@ fun LoginScreen(component: LoginComponent) {
                     ) {
                         Text(
                             text = stringResource(Res.string.login_text),
-                            fontSize = (maxHeight * 0.018f).value.sp,
+                            fontSize = fixedSp(maxHeight * 0.017f),
                             color = AppColors.whiteColor,
                             fontFamily = FontFamily(Font(Res.font.rem_bold))
                         )

@@ -63,6 +63,7 @@ import org.dd_healthcare.internal_logcat.presentation.ui.components_or_viewmodel
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 import qrscanner.QrScanner
 import kotlin.collections.get
 
@@ -96,7 +97,7 @@ fun DashboardScreen(component: DashboardComponent) {
             Spacer(modifier = Modifier.height(maxHeight * 0.005f))
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().height(maxHeight * 0.06f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -104,7 +105,7 @@ fun DashboardScreen(component: DashboardComponent) {
                 Text(
                     text = stringResource(Res.string.header_text),
                     color = AppColors.textGrey,
-                    fontSize = (maxHeight * 0.02f).value.sp,
+                    fontSize = fixedSp(maxHeight * 0.022f),
                     fontFamily = FontFamily(Font(Res.font.rem_semibold)),
                 )
 
@@ -120,7 +121,6 @@ fun DashboardScreen(component: DashboardComponent) {
                         component.navigateToLogin()
                     }
                 )
-
             }
 
             Box(
@@ -132,7 +132,7 @@ fun DashboardScreen(component: DashboardComponent) {
                     is StateClass.UiState.Loading -> {
                         CircularProgressIndicator(
                             modifier = Modifier.align(Alignment.Center).height(maxHeight * 0.10f)
-                                .width(maxWidth * 0.20f),
+                                .width(maxWidth * 0.2f),
                             color = AppColors.themeGreenColor
                         )
                     }
@@ -141,7 +141,7 @@ fun DashboardScreen(component: DashboardComponent) {
                         Text(
                             text = stringResource(Res.string.no_data_text),
                             color = AppColors.textGrey,
-                            fontSize = 14.sp,
+                            fontSize = fixedSp(maxHeight * 0.02f),
                             fontFamily = FontFamily(Font(Res.font.rem_medium)),
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -151,7 +151,7 @@ fun DashboardScreen(component: DashboardComponent) {
                         Text(
                             text = stringResource(Res.string.no_data_text),
                             color = AppColors.textGrey,
-                            fontSize = 14.sp,
+                            fontSize = fixedSp(maxHeight * 0.02f),
                             fontFamily = FontFamily(Font(Res.font.rem_medium)),
                             modifier = Modifier.align(Alignment.Center)
                         )
@@ -164,18 +164,19 @@ fun DashboardScreen(component: DashboardComponent) {
                             Text(
                                 text = stringResource(Res.string.no_data_text),
                                 color = AppColors.textGrey,
-                                fontSize = 14.sp,
+                                fontSize = fixedSp(maxHeight * 0.02f),
                                 fontFamily = FontFamily(Font(Res.font.rem_medium)),
                                 modifier = Modifier.align(Alignment.Center)
                             )
                         } else {
+
                             LazyColumn(modifier = Modifier.fillMaxSize()) {
                                 items(deviceList) { singleDevice ->
 
                                     Card(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(maxHeight * 0.10f)
+                                            .height(maxHeight * 0.12f)
                                             .padding(
                                                 top = maxHeight * 0.01f,
                                                 bottom = maxHeight * 0.01f
@@ -193,14 +194,13 @@ fun DashboardScreen(component: DashboardComponent) {
                                             Image(
                                                 painter = painterResource(Res.drawable.description_logo),
                                                 contentDescription = "Description Icon",
-                                                modifier = Modifier.height(maxHeight * 0.05f)
+                                                modifier = Modifier.height(maxHeight * 0.055f)
                                                     .width(maxWidth * 0.10f)
                                             )
 
                                             // text in middle
                                             Column(
-                                                modifier = Modifier.weight(1f).fillMaxHeight()
-                                                    .padding(horizontal = maxWidth * 0.03f),
+                                                modifier = Modifier.weight(1f).fillMaxHeight().padding(horizontal = maxWidth * 0.03f),
                                                 verticalArrangement = Arrangement.Center
                                             ) {
 
@@ -208,7 +208,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = (maxHeight * 0.017f).value.sp,
+                                                            fontSize = fixedSp(maxHeight * 0.016f),
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_regular
@@ -222,7 +222,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = (maxHeight * 0.019f).value.sp,
+                                                            fontSize = fixedSp(maxHeight * 0.019f),
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_semibold
@@ -240,7 +240,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = (maxHeight * 0.017f).value.sp,
+                                                            fontSize = fixedSp(maxHeight * 0.016f),
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_regular
@@ -254,7 +254,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                                     withStyle(
                                                         style = SpanStyle(
                                                             color = AppColors.textGrey,
-                                                            fontSize = (maxHeight * 0.019f).value.sp,
+                                                            fontSize = fixedSp(maxHeight * 0.019f),
                                                             fontFamily = FontFamily(
                                                                 Font(
                                                                     Res.font.rem_semibold
@@ -271,7 +271,7 @@ fun DashboardScreen(component: DashboardComponent) {
                                             Image(
                                                 painter = painterResource(Res.drawable.edit_logo),
                                                 contentDescription = "Edit Icon",
-                                                modifier = Modifier.height(maxHeight * 0.05f)
+                                                modifier = Modifier.height(maxHeight * 0.055f)
                                                     .width(maxWidth * 0.06f).clickable(
                                                         indication = null,
                                                         interactionSource = remember { MutableInteractionSource() }

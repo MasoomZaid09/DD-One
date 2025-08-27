@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.calf.core.LocalPlatformContext
@@ -60,13 +61,15 @@ import org.dd_healthcare.internal_logcat.presentation.ui.composables.RoundedEdit
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.StateClass
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 @Composable
 fun ServiceEngineerScreen(
     component: FormComponent,
     response: ServiceDepartment,
     isNewDevice: Boolean,
-    completeResponse: Data
+    completeResponse: Data,
+    maxHeight: Dp
 ) {
     var serviceEngineerName by remember { mutableStateOf(response.serviceEngineerName) }
     var serviceEngineerNameError by remember { mutableStateOf<String?>(null) }
@@ -107,37 +110,39 @@ fun ServiceEngineerScreen(
         Text(
             text = stringResource(Res.string.service_text),
             color = AppColors.textGrey,
-            fontSize = 15.sp,
+            fontSize = fixedSp(maxHeight * 0.02f),
             fontFamily = FontFamily(Font(Res.font.rem_semibold)),
         )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.03f))
 
         Text(
             text = "Service Engineer Name",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(serviceEngineerName, onValueChange = {
             serviceEngineerName = it
             serviceEngineerNameError = null
-        }, "Enter Service Engineer Name")
-        serviceEngineerNameError?.let { errorText(it) }
+        }, "Enter Service Engineer Name",
+            maxHeight * 0.016f)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        serviceEngineerNameError?.let { errorText(it, (maxHeight * 0.016f)) }
+
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Installation Date",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         Box(
             contentAlignment = Alignment.CenterStart,
@@ -149,24 +154,24 @@ fun ServiceEngineerScreen(
             Text(
                 modifier = Modifier.padding(horizontal = 15.dp),
                 text = installationDate,
-                fontSize = 13.sp,
+                fontSize = fixedSp(maxHeight * 0.017f),
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             )
         }
 
-        installationDateError?.let { errorText(it) }
+        installationDateError?.let { errorText(it,maxHeight * 0.016f) }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Dispatch Date",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         Box(
             contentAlignment = Alignment.CenterStart,
@@ -178,14 +183,14 @@ fun ServiceEngineerScreen(
             Text(
                 modifier = Modifier.padding(horizontal = 15.dp),
                 text = dispatchDate,
-                fontSize = 13.sp,
+                fontSize = fixedSp(maxHeight * 0.017f),
                 color = AppColors.textGrey,
                 fontFamily = FontFamily(Font(Res.font.rem_regular))
             )
         }
-        dispatchDateError?.let { errorText(it) }
+        dispatchDateError?.let { errorText(it,maxHeight * 0.016f) }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -193,17 +198,17 @@ fun ServiceEngineerScreen(
             }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppColors.buttonDarkGrey,
                 contentColor = AppColors.whiteColor
-            ), modifier = Modifier.fillMaxWidth().height(50.dp)
+            ), modifier = Modifier.fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = "UPLOAD REPORT",
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
         // getting state of file upload
         when(state){
@@ -217,7 +222,7 @@ fun ServiceEngineerScreen(
             }
             is StateClass.UiState.Idle -> {}
             is StateClass.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally),color = AppColors.themeGreenColor)
             }
         }
 
@@ -225,12 +230,12 @@ fun ServiceEngineerScreen(
             Text(
                 text = fileName,
                 color = AppColors.errorColor,
-                fontSize = 12.sp,
+                fontSize = fixedSp(maxHeight * 0.016f),
                 fontFamily = FontFamily(Font(Res.font.rem_regular)),
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -314,28 +319,28 @@ fun ServiceEngineerScreen(
             }, shape = RoundedCornerShape(20), colors = ButtonDefaults.buttonColors(
                 backgroundColor = AppColors.themeGreenColor,
                 contentColor = AppColors.whiteColor
-            ), modifier = Modifier.fillMaxWidth().height(50.dp)
+            ), modifier = Modifier.fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = stringResource(Res.string.submit_text),
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
         WheelDatePickerView(
             showDatePicker = stateOfInstallDatePicker,
-            height = 80.dp,
+            height = maxHeight * 0.40f,
             dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             rowCount = 3,
             titleStyle = TextStyle(
-                fontSize = 12.sp, color = AppColors.blackColor
+                fontSize = fixedSp(maxHeight * 0.017f), color = AppColors.blackColor
             ),
             doneLabelStyle = TextStyle(
-                fontSize = 12.sp, color = AppColors.blackColor
+                fontSize = fixedSp(maxHeight * 0.017f), color = AppColors.blackColor
             ),
             onDoneClick = {
                 stateOfInstallDatePicker = false
@@ -350,14 +355,14 @@ fun ServiceEngineerScreen(
 
         WheelDatePickerView(
             showDatePicker = stateOfDispatchDatePicker,
-            height = 80.dp,
+            height = maxHeight * 0.40f,
             dateTimePickerView = DateTimePickerView.BOTTOM_SHEET_VIEW,
             rowCount = 3,
             titleStyle = TextStyle(
-                fontSize = 12.sp, color = AppColors.blackColor
+                fontSize = fixedSp(maxHeight * 0.017f), color = AppColors.blackColor
             ),
             doneLabelStyle = TextStyle(
-                fontSize = 12.sp, color = AppColors.blackColor
+                fontSize = fixedSp(maxHeight * 0.017f), color = AppColors.blackColor
             ),
             onDoneClick = {
                 stateOfDispatchDatePicker = false

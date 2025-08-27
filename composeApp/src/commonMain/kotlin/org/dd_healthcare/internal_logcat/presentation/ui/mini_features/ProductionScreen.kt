@@ -1,8 +1,11 @@
 package org.dd_healthcare.internal_logcat.presentation.ui.mini_features
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.rememberScrollState
@@ -23,7 +26,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import androidx.compose.ui.unit.sp
 import com.mohamedrejeb.calf.core.LocalPlatformContext
 import com.mohamedrejeb.calf.picker.FilePickerFileType
@@ -52,13 +57,15 @@ import org.dd_healthcare.internal_logcat.presentation.ui.composables.RoundedEdit
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.StateClass
+import org.dd_healthcare.internal_logcat.utils.fixedSp
 
 @Composable
 fun ProductionScreen(
     component: FormComponent,
     response: ProductionDepartment,
     isNewDevice: Boolean,
-    completeResponse: Data
+    completeResponse: Data,
+    maxHeight : Dp
 ) {
 
     val type = listOf("Demo", "Sale", "Replacement")
@@ -77,7 +84,7 @@ fun ProductionScreen(
         onResult = { files ->
             scope.launch {
                 files.forEach {
-                    component.uploadFileOnServer(true,it,context)
+                    component.uploadFileOnServer(true, it, context)
                 }
             }
         }
@@ -102,32 +109,34 @@ fun ProductionScreen(
     var selectedNeoSensorType by remember { mutableStateOf(response.neoSensorType) }
     var filePath by remember { mutableStateOf(response.dhrFile) }
 
-    var fileName by remember { mutableStateOf(
-        if (filePath.isNotEmpty()) filePath.split(".com")[1].split("/")[1] else ""
-    )}
+    var fileName by remember {
+        mutableStateOf(
+            if (filePath.isNotEmpty()) filePath.split(".com")[1].split("/")[1] else ""
+        )
+    }
+
 
     Column(
         modifier = Modifier.verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.SpaceEvenly
-    ) {
+    )
+    {
         Text(
             text = stringResource(Res.string.production_text),
             color = AppColors.textGrey,
-            fontSize = 15.sp,
+            fontSize = fixedSp(maxHeight * 0.02f),
             fontFamily = FontFamily(Font(Res.font.rem_semibold)),
         )
-
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.03f))
 
         Text(
             text = "Serial Number",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             serialNumber,
@@ -135,21 +144,20 @@ fun ProductionScreen(
                 serialNumber = it
                 serialNumberError = null
             },
-            "Enter Serial Number"
+            "Enter Serial Number",
+            (maxHeight * 0.017f)
         )
 
-        serialNumberError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        serialNumberError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Pi MAC Address",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             piMacAddress,
@@ -157,20 +165,19 @@ fun ProductionScreen(
                 piMacAddress = it
                 piMacAddressError = null
             },
-            "Enter Pi Mac Address"
+            "Enter Pi Mac Address",
+            (maxHeight * 0.017f)
         )
-        piMacAddressError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        piMacAddressError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Android MAC Address",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             androidMacAddress,
@@ -178,20 +185,19 @@ fun ProductionScreen(
                 androidMacAddress = it
                 androidMacAddressError = null
             },
-            "Enter Android Mac Address"
+            "Enter Android Mac Address",
+            (maxHeight * 0.017f)
         )
-        androidMacAddressError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        androidMacAddressError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Log Device ID",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             logDeviceId,
@@ -199,59 +205,52 @@ fun ProductionScreen(
                 logDeviceId = it
                 logDeviceIdError = null
             },
-            "Enter Log Device ID"
+            "Enter Log Device ID",
+            (maxHeight * 0.017f)
         )
-        logDeviceIdError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        logDeviceIdError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Type",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         selectedType = DropDownCustom(type)
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Model",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         selectedModel = DropDownCustom(model)
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Screen Size",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
-
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
         selectedScreenSize = DropDownCustom(screenSize)
-
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Software Version",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
-
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             softwareVersion,
@@ -259,46 +258,46 @@ fun ProductionScreen(
                 softwareVersion = it
                 softwareVersionError = null
             },
-            "Enter Software Version"
+            "Enter Software Version",
+            (maxHeight * 0.017f)
         )
-        softwareVersionError?.let { errorText(it) }
-
-        Spacer(modifier = Modifier.height(20.dp))
+        softwareVersionError?.let { errorText(it, (maxHeight * 0.016f)) }
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Exhale Valve Type",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         selectedExhaleValveType = DropDownCustom(exhaleValveType)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Neo Sensor Type",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         selectedNeoSensorType = DropDownCustom(neoSensorType)
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Text(
             text = "Description",
             color = AppColors.textGrey,
-            fontSize = 14.sp,
+            fontSize = fixedSp(maxHeight * 0.017f),
             fontFamily = FontFamily(Font(Res.font.rem_medium)),
         )
 
-        Spacer(modifier = Modifier.height(7.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.02f))
 
         RoundedEditTextNormal(
             description,
@@ -306,11 +305,12 @@ fun ProductionScreen(
                 description = it
                 descriptionError = null
             },
-            "Enter Description"
+            "Enter Description",
+            (maxHeight * 0.017f)
         )
-        descriptionError?.let { errorText(it) }
+        descriptionError?.let { errorText(it, (maxHeight * 0.016f)) }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -322,31 +322,37 @@ fun ProductionScreen(
                 contentColor = Color.White
             ),
             modifier = Modifier
-                .fillMaxWidth()
-                .height(50.dp)
+                .fillMaxWidth().height(maxHeight * 0.065f)
         ) {
             Text(
                 text = "Upload DHR",
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
 
-        when(state){
+        when (state) {
 
             is StateClass.UiState.Error -> {
                 fileName = "File Not Found"
             }
+
             is StateClass.UiState.Success -> {
-                filePath = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.path ?: ""
-                fileName = (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName ?: ""
+                filePath =
+                    (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.path
+                        ?: ""
+                fileName =
+                    (state as StateClass.UiState.Success<UploadFileResponse>).data.file?.originalName
+                        ?: ""
             }
+
             is StateClass.UiState.Idle -> {}
             is StateClass.UiState.Loading -> {
-                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally),
+                    color = AppColors.themeGreenColor)
             }
         }
 
@@ -354,12 +360,12 @@ fun ProductionScreen(
             Text(
                 text = fileName,
                 color = AppColors.errorColor,
-                fontSize = 12.sp,
+                fontSize = fixedSp(maxHeight * 0.014f),
                 fontFamily = FontFamily(Font(Res.font.rem_regular)),
             )
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
         Button(
             onClick = {
@@ -376,7 +382,7 @@ fun ProductionScreen(
                     softwareVersionError = "Please Enter Software Version"
                 } else if (description.isEmpty()) {
                     descriptionError = "Please Enter Description"
-                }else if (filePath.isEmpty()){
+                } else if (filePath.isEmpty()) {
                     fileName = "Please Select File"
                 } else {
                     serialNumberError = null
@@ -469,16 +475,16 @@ fun ProductionScreen(
             ),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(50.dp)
+                .height(maxHeight * 0.065f)
         ) {
             Text(
                 text = stringResource(Res.string.submit_text),
-                fontSize = 14.sp,
+                fontSize = fixedSp(maxHeight * 0.018f),
                 color = Color.White,
                 fontFamily = FontFamily(Font(Res.font.rem_bold))
             )
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(maxHeight * 0.01f))
     }
 }

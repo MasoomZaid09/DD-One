@@ -47,6 +47,11 @@ kotlin {
         val commonMain by getting {
             resources.srcDir("src/commonMain/resources")
             dependencies {
+                implementation(libs.permissions.camera)
+                api("dev.icerock.moko:permissions-compose:0.20.0")
+
+                // for qr scanner
+                implementation(libs.kscan)
 
 //                // calf for use view like file picker
 //                // File picker ke liye
@@ -55,7 +60,7 @@ kotlin {
                 // Agar tumne calf-ui components ka use kiya hai to
                 implementation(libs.calf.ui)
 
-                // COMPOSE MULTIPLATFORM QR SCANNER
+                // COMPOSE MULTIPLATFORM file picker and date picker
                 implementation(libs.qr.kit)
                 implementation(libs.calf.file.picker.coil)
                 implementation(libs.calf.file.picker)
@@ -109,10 +114,6 @@ kotlin {
             dependsOn(commonMain)
             dependencies{
                 implementation(libs.ktor.client.darwin)
-                implementation(compose.ui)
-                implementation(compose.foundation)
-                implementation(compose.material3)
-                implementation(compose.runtime)
             }
             iosX64().compilations["main"].defaultSourceSet.dependsOn(this)
             iosArm64().compilations["main"].defaultSourceSet.dependsOn(this)
@@ -131,7 +132,7 @@ android {
         applicationId = "org.dd_healthcare.internal_logcat"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 4
+        versionCode = 5
         versionName = "1.0"
     }
 

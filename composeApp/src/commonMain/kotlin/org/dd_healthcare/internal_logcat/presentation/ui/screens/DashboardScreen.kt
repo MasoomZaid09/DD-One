@@ -30,6 +30,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,10 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.camera.CAMERA
+import dev.icerock.moko.permissions.compose.BindEffect
+import dev.icerock.moko.permissions.compose.rememberPermissionsControllerFactory
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.description_logo
 import internallogcat.composeapp.generated.resources.edit_logo
@@ -53,6 +58,7 @@ import internallogcat.composeapp.generated.resources.out_logo
 import internallogcat.composeapp.generated.resources.rem_medium
 import internallogcat.composeapp.generated.resources.rem_regular
 import internallogcat.composeapp.generated.resources.rem_semibold
+import kotlinx.coroutines.launch
 import org.dd_healthcare.internal_logcat.domain.lifecycle.OnLifeCycleEvent
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
@@ -64,6 +70,9 @@ import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
 import org.dd_healthcare.internal_logcat.utils.fixedSp
+import org.ncgroup.kscan.BarcodeFormat
+import org.ncgroup.kscan.BarcodeResult
+import org.ncgroup.kscan.ScannerView
 import qrscanner.QrScanner
 import kotlin.collections.get
 
@@ -73,7 +82,12 @@ fun DashboardScreen(component: DashboardComponent) {
     val sharedPreferences: SharedPreferencesImpl = getKoin().get()
     val state by component.deviceListResponse.collectAsState()
     var clickInOutButton by remember { mutableStateOf(false) }
-    var openImagePicker by remember { mutableStateOf(false) }
+
+    // for qr scanning
+    val factory = rememberPermissionsControllerFactory()
+    val controller = remember(factory) { factory.createPermissionsController() }
+    val scope = rememberCoroutineScope()
+    BindEffect(controller)
 
     // best practice fir use common lifecycle
     OnLifeCycleEvent { event ->
@@ -305,7 +319,18 @@ fun DashboardScreen(component: DashboardComponent) {
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
-                        clickInOutButton = !clickInOutButton
+
+                        // check camera permissions here
+                        scope.launch {
+                            runCatching {
+                                controller.providePermission(Permission.CAMERA)
+                            }.onFailure {
+                                SharedLogger.i("Camera Permission Failed Due to :$it")
+                            }
+
+                            // now we have camera permissions we can continue now
+                            clickInOutButton = !clickInOutButton
+                        }
                     }
                 )
 
@@ -316,32 +341,46 @@ fun DashboardScreen(component: DashboardComponent) {
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
                     ) {
-                        clickInOutButton = !clickInOutButton
+                        // check camera permissions here
+                        scope.launch {
+                            runCatching {
+                                controller.providePermission(Permission.CAMERA)
+                            }.onFailure {
+                                SharedLogger.i("Camera Permission Failed Due to :$it")
+                            }
+
+                            // now we have camera permissions we can continue now
+                            clickInOutButton = !clickInOutButton
+                        }
                     }
                 )
             }
         }
     }
 
+
     if (clickInOutButton) {
-        QrScanner(
-            modifier = Modifier
-                .clipToBounds()
-                .clip(shape = RoundedCornerShape(size = 14.dp)),
-            flashlightOn = false,
-            openImagePicker = openImagePicker,
-            onCompletion = {
-                component.sendDataToFormPage(it, isNewDevice = true)
-                clickInOutButton = false
-            },
-            imagePickerHandler = {
-                openImagePicker = it
-            },
-            onFailure = {
-                SharedLogger.i("QR Failed")
+        ScannerView(
+            codeTypes = listOf(
+                BarcodeFormat.FORMAT_QR_CODE,
+            )
+        ) { result ->
+            when (result) {
+                is BarcodeResult.OnSuccess -> {
+                    SharedLogger.i("Barcode: ${result.barcode.data}, format: ${result.barcode.format}")
+                    component.sendDataToFormPage(result.barcode.data, isNewDevice = true)
+                    clickInOutButton = false
+                }
+                is BarcodeResult.OnFailed -> {
+                    SharedLogger.i("error: ${result.exception.message}")
+                }
+                BarcodeResult.OnCanceled -> {
+                    SharedLogger.i("scan canceled")
+                }
             }
-        )
+        }
     }
+
 
 }
 

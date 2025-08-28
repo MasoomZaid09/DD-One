@@ -5,7 +5,6 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSSelectorFromString
 import platform.UIKit.UIApplication
 
-@Composable
 @OptIn(ExperimentalForeignApi::class)
 actual fun hideKeyboard(){
     UIApplication.sharedApplication.sendAction(

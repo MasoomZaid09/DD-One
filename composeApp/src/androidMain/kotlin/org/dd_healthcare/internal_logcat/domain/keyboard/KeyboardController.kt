@@ -6,8 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-@Composable
 actual fun hideKeyboard() {
-    val controller = LocalSoftwareKeyboardController.current
-    controller?.hide()
+//    val controller = LocalSoftwareKeyboardController.current
+//    controller?.hide()
 }

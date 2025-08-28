@@ -2,6 +2,7 @@ package org.dd_healthcare.internal_logcat.presentation.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,17 +20,24 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mohamedrejeb.calf.core.LocalPlatformContext
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.dd_logo
 import internallogcat.composeapp.generated.resources.email_text
@@ -38,25 +46,30 @@ import internallogcat.composeapp.generated.resources.password_text
 import internallogcat.composeapp.generated.resources.rem_bold
 import internallogcat.composeapp.generated.resources.rem_medium
 import internallogcat.composeapp.generated.resources.rem_semibold
+import org.dd_healthcare.internal_logcat.Platform
+import org.dd_healthcare.internal_logcat.domain.keyboard.hideKeyboard
 import org.jetbrains.compose.resources.Font
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.koin.mp.KoinPlatform.getKoin
 import org.dd_healthcare.internal_logcat.domain.local.SharedPreferencesImpl
+import org.dd_healthcare.internal_logcat.getPlatform
 import org.dd_healthcare.internal_logcat.presentation.ui.components_or_viewmodels.LoginComponent
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.RoundedEditText
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.errorText
 import org.dd_healthcare.internal_logcat.utils.AppColors
+import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
 import org.dd_healthcare.internal_logcat.utils.Validator
 import org.dd_healthcare.internal_logcat.utils.fixedSp
+import org.jetbrains.compose.resources.getString
 
 @Composable
 fun LoginScreen(component: LoginComponent) {
 
     val state by component.loginResponse.collectAsState()
 
-    val sharedPreferences : SharedPreferencesImpl = getKoin().get()
+    val sharedPreferences: SharedPreferencesImpl = getKoin().get()
 
     var email by remember { mutableStateOf("") }
     var pass by remember { mutableStateOf("") }
@@ -64,23 +77,29 @@ fun LoginScreen(component: LoginComponent) {
     var emailError by remember { mutableStateOf<String?>(null) }
     var passwordError by remember { mutableStateOf<String?>(null) }
 
+    // used for hide keyboard
+    val focusManager = LocalFocusManager.current
+
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppColors.whiteColor),
-//            .pointerInput(Unit){
-//                detectTapGestures { hideKeyboard() }
-//            },
+            .background(AppColors.whiteColor)
+            .pointerInput(Unit) {
+                detectTapGestures{
+                    focusManager.clearFocus()
+                }
+            },
     ) {
 
         val maxWidth = maxWidth
         val maxHeight = maxHeight
 
-        when(state){
+        when (state) {
 
-            is StateClass.UiState.Loading ->{
+            is StateClass.UiState.Loading -> {
                 CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center).height(maxHeight * 0.10f).width(maxWidth * 0.20f),
+                    modifier = Modifier.align(Alignment.Center).height(maxHeight * 0.10f)
+                        .width(maxWidth * 0.20f),
                     color = AppColors.themeGreenColor
                 )
             }
@@ -100,7 +119,9 @@ fun LoginScreen(component: LoginComponent) {
             else -> {
                 Column(
 
-                    modifier = Modifier.height(maxHeight).width(maxWidth).padding(horizontal = maxWidth * 0.05f).verticalScroll(rememberScrollState())
+                    modifier = Modifier.height(maxHeight).width(maxWidth)
+                        .padding(horizontal = maxWidth * 0.05f)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Spacer(modifier = Modifier.height(maxHeight * 0.18f))
 
@@ -149,7 +170,7 @@ fun LoginScreen(component: LoginComponent) {
                         (maxHeight * 0.015f)
                     )
 
-                    emailError?.let { errorText(it,(maxHeight * 0.014f)) }
+                    emailError?.let { errorText(it, (maxHeight * 0.014f)) }
 
                     Spacer(modifier = Modifier.height(maxHeight * 0.025f))
 
@@ -176,7 +197,7 @@ fun LoginScreen(component: LoginComponent) {
                         "Enter your password",
                         (maxHeight * 0.015f)
                     )
-                    passwordError?.let { errorText(it,(maxHeight * 0.014f)) }
+                    passwordError?.let { errorText(it, (maxHeight * 0.014f)) }
 
                     Spacer(modifier = Modifier.height(maxHeight * 0.07f))
 

@@ -12,7 +12,8 @@ struct iOSApp: App {
     var body: some Scene {
         WindowGroup {
             ComposeView()
-                .ignoresSafeArea() // optional, full screen
+                .ignoresSafeArea(.keyboard) // safe area maintain krega,full screen
+                .background(Color.white) // ✅ notch ko white karega
         }
     }
 }

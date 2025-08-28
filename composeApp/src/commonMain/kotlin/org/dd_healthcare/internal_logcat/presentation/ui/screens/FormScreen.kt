@@ -3,6 +3,7 @@ package org.dd_healthcare.internal_logcat.presentation.ui.screens
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -27,9 +29,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import internallogcat.composeapp.generated.resources.Res
 import internallogcat.composeapp.generated.resources.back_logo
+import network.chaintech.kmp_date_time_picker.getPlatform
 import org.dd_healthcare.internal_logcat.presentation.ui.mini_features.AccountScreen
 import org.dd_healthcare.internal_logcat.presentation.ui.mini_features.DispatchScreen
 import org.dd_healthcare.internal_logcat.presentation.ui.composables.InfoLoggingFormStatus
@@ -48,7 +53,6 @@ import org.dd_healthcare.internal_logcat.presentation.ui.components_or_viewmodel
 import org.dd_healthcare.internal_logcat.utils.AppColors
 import org.dd_healthcare.internal_logcat.utils.SharedLogger
 import org.dd_healthcare.internal_logcat.utils.StateClass
-import org.dd_healthcare.internal_logcat.utils.keyboardSafeArea
 
 @Composable
 fun FormScreen(component: FormComponent) {
@@ -85,14 +89,24 @@ fun FormScreen(component: FormComponent) {
 
 @Composable
 fun MainUI(component: FormComponent, sharedPreferences: SharedPreferencesImpl) {
-    // consumeWindowInsects is used for prevent UI shrink while keyboard appears
+    val focusManager = LocalFocusManager.current
     BoxWithConstraints(
-        modifier = Modifier.fillMaxSize()
+        modifier = if (getPlatform().name.contains("iOS")) Modifier.fillMaxSize()
             .background(AppColors.whiteColor)
-//            .consumeWindowInsets(WindowInsets.ime)
-            .padding(WindowInsets.safeDrawing.asPaddingValues())
-//            .padding(WindowInsets.ime.asPaddingValues())
-//            .imePadding()
+            .pointerInput(Unit){
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
+        else Modifier.fillMaxSize()
+            .background(AppColors.whiteColor)
+            .pointerInput(Unit){
+                detectTapGestures {
+                    focusManager.clearFocus()
+                }
+            }
+                // dont use it for ios because it can generate UI shrink or resize issue when keyboard open
+            .windowInsetsPadding(WindowInsets.safeDrawing)
     ) {
 
         val maxHeight = maxHeight

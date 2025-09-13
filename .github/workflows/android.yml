@@ -61,7 +61,7 @@ jobs:
           DATE=$(date +"%d %B %Y")
 
           curl -X POST "$API_UPLOAD_URL" \
-            -F "file=@androidApp/build/outputs/apk/release/composeApp-release.apk" \
+            -F "file=@$GITHUB_WORKSPACE/composeApp/release/composeApp-release.apk" \
             -F "project_code=$PROJECT_CODE" \
             -F "version=$VERSION" \
             -F "dateTime=$DATE" \

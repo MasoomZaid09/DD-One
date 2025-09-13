@@ -156,7 +156,8 @@ android {
     // add this for automate versioning for ci/cd
     tasks.register("printVersionName") {
         doLast {
-            println(android.defaultConfig.versionName)
+            val versionName = project.findProperty("versionName") ?: "1.0.0"
+            println(versionName)
         }
     }
 

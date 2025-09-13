@@ -10,6 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    #    varibles bn rhe h yaha constants ke liye
     env:
       PROJECT_CODE: "001"
       API_UPLOAD_URL: "http://3.25.213.83:8000/api/s3/upload-app"
@@ -32,22 +33,29 @@ jobs:
 
       # 4) Decode keystore
       - name: Decode Keystore
+
+        #  hmne .jks ko base64 me encode krke github secrets me rkha h wo ab use normal jks me convert krke use kr rha with:
+        # KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }} yhi secret variable ka name h jisme .jks ka base64 copy h
         run: |
           echo "$KEYSTORE_BASE64" | base64 --decode > release-key.jks
+        # yaha bhi but important values ko secrets me rkha jata h to whi se import krke use kr rha
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
 
       # 5) Build signed APK
       - name: Build Release APK
+        # yaha clean krke release build bana rha h
+        # signature ke liye bhi secrets se values le rha h jo ki whi save h actions me
         run: |
-          ./gradlew clean assembleRelease \
-            -Pandroid.injected.signing.store.file=release-key.jks \
+          ./gradlew composeApp:assembleRelease \
+            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/release-key.jks" \
             -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
             -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
             -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"
 
       # 6) Upload APK to API
       - name: Upload APK to API
+        # yaha file utha kr sb data nikal kr api me post kr rha
         run: |
           VERSION=$(./gradlew -q printVersionName) || VERSION="1.0.0"
           DATE=$(date +"%d %B %Y")
@@ -61,5 +69,6 @@ jobs:
 
       # 7) Cleanup code
       - name: Cleanup
+        # yaha jo .jks isne convert krke temp me save kiya tha wo release kr rha h
         run: rm -f release-key.jks
 

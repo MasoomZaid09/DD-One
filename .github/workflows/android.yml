@@ -37,7 +37,7 @@ jobs:
         #  hmne .jks ko base64 me encode krke github secrets me rkha h wo ab use normal jks me convert krke use kr rha with:
         # KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }} yhi secret variable ka name h jisme .jks ka base64 copy h
         run: |
-          echo "$KEYSTORE_BASE64" | base64 --decode > composeApp/release-key.jks
+          echo "$KEYSTORE_BASE64" | base64 --decode > release-key.jks
        # yaha bhi but important values ko secrets me rkha jata h to whi se import krke use kr rha
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}

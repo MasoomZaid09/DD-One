@@ -15,7 +15,7 @@ jobs:
       API_UPLOAD_URL: "http://3.25.213.83:8000/api/s3/upload-app"
 
     steps:
-      # 1) Checkout code
+      # 1) Checkout code masoom
       - name: Checkout Repository
         uses: actions/checkout@v4
 

@@ -153,6 +153,13 @@ android {
         targetCompatibility = JavaVersion.VERSION_11
     }
 
+    // add this for automate versioning for ci/cd
+    tasks.register("printVersionName") {
+        doLast {
+            println(android.defaultConfig.versionName)
+        }
+    }
+
     repositories {
         google()
         mavenCentral()

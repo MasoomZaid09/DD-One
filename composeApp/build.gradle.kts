@@ -154,12 +154,13 @@ android {
     }
 
     // add this for automate versioning for ci/cd
+    val versionName = project.findProperty("versionName") ?: "1.0.0"
     tasks.register("printVersionName") {
         doLast {
-            val versionName = project.findProperty("versionName") ?: "1.0.0"
-            println(versionName)
+            println(versionName) // ✅ safe for config cache
         }
     }
+
 
     repositories {
         google()

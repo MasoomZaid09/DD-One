@@ -48,7 +48,7 @@ jobs:
         # signature ke liye bhi secrets se values le rha h jo ki whi save h actions me
         run: |
           ./gradlew composeApp:assembleRelease \
-            -Pandroid.injected.signing.store.file=@GITHUB_WORKSPACE/release-key.jks \
+            -Pandroid.injected.signing.store.file="$GITHUB_WORKSPACE/release-key.jks" \
             -Pandroid.injected.signing.store.password="${{ secrets.KEYSTORE_PASSWORD }}" \
             -Pandroid.injected.signing.key.alias="${{ secrets.KEY_ALIAS }}" \
             -Pandroid.injected.signing.key.password="${{ secrets.KEY_PASSWORD }}"

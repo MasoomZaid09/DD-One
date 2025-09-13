@@ -53,13 +53,13 @@ jobs:
           DATE=$(date +"%d %B %Y")
 
           curl -X POST "$API_UPLOAD_URL" \
-            -F "file=@androidApp/build/outputs/apk/release/androidApp-release.apk" \
+            -F "file=@androidApp/build/outputs/apk/release/composeApp-release.apk" \
             -F "project_code=$PROJECT_CODE" \
             -F "version=$VERSION" \
             -F "dateTime=$DATE" \
           -v
 
-      # 7) Cleanup
+      # 7) Cleanup code
       - name: Cleanup
         run: rm -f release-key.jks
 
